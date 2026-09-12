@@ -9,6 +9,7 @@
 **CivicFix** is an end-to-end civic complaint management platform designed to connect citizens, municipal authorities, and ground officers in a unified workflow. From pothole detection to resolution proof, CivicFix provides real-time tracking, automated SLA monitoring, geographic hotspots, citizen ratings, and verifiable before/after evidence.
 
 ---
+Live:https://civicfix-frontend-hatx.onrender.com
 
 ## ✨ Features
 
