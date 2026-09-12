@@ -165,7 +165,7 @@ function PublicComplaintTracking() {
                                     <div className="border rounded-3 p-2 bg-light">
                                         <span className="badge bg-secondary mb-2">Original Grievance (Before)</span>
                                         <img
-                                            src={complaint.image.startsWith("http") ? complaint.image : `http://127.0.0.1:8000${complaint.image}`}
+                                            src={complaint.image.startsWith("http") ? complaint.image : `https://civicfix-fs43.onrender.com${complaint.image}`}
                                             alt="Original Complaint"
                                             className="comparison-image rounded"
                                         />
@@ -178,7 +178,7 @@ function PublicComplaintTracking() {
                                     <div className="border rounded-3 p-2 bg-light">
                                         <span className="badge bg-success mb-2">Officer Resolution Proof (After)</span>
                                         <img
-                                            src={complaint.resolution_image.startsWith("http") ? complaint.resolution_image : `http://127.0.0.1:8000${complaint.resolution_image}`}
+                                            src={complaint.resolution_image.startsWith("http") ? complaint.resolution_image : `https://civicfix-fs43.onrender.com${complaint.resolution_image}`}
                                             alt="Resolution Proof"
                                             className="comparison-image rounded"
                                         />

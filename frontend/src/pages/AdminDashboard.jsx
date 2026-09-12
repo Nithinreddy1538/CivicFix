@@ -946,13 +946,13 @@ function AdminDashboard() {
                                                 <td>
                                                     {complaint.image ? (
                                                         <a
-                                                            href={complaint.image.startsWith("http") ? complaint.image : `http://127.0.0.1:8000${complaint.image}`}
+                                                            href={complaint.image.startsWith("http") ? complaint.image : `https://civicfix-fs43.onrender.com${complaint.image}`}
                                                             target="_blank"
                                                             rel="noreferrer"
                                                             title="Click to view full image"
                                                         >
                                                             <img
-                                                                src={complaint.image.startsWith("http") ? complaint.image : `http://127.0.0.1:8000${complaint.image}`}
+                                                                src={complaint.image.startsWith("http") ? complaint.image : `https://civicfix-fs43.onrender.com${complaint.image}`}
                                                                 alt="Complaint"
                                                                 className="rounded shadow-sm border"
                                                                 style={{ width: "42px", height: "42px", objectFit: "cover" }}

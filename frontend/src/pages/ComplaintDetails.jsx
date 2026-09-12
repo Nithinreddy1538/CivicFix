@@ -337,7 +337,7 @@ function ComplaintDetails() {
                                                 src={
                                                     complaint.image.startsWith("http")
                                                         ? complaint.image
-                                                        : `http://127.0.0.1:8000${complaint.image}`
+                                                        : `https://civicfix-fs43.onrender.com${complaint.image}`
                                                 }
                                                 alt="Complaint"
                                                 className="comparison-image rounded"
@@ -357,7 +357,7 @@ function ComplaintDetails() {
                                                 src={
                                                     complaint.resolution_image.startsWith("http")
                                                         ? complaint.resolution_image
-                                                        : `http://127.0.0.1:8000${complaint.resolution_image}`
+                                                        : `https://civicfix-fs43.onrender.com${complaint.resolution_image}`
                                                 }
                                                 alt="Resolution"
                                                 className="comparison-image rounded"

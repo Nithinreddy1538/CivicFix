@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "http://127.0.0.1:8000/api"
+ baseURL: "https://civicfix-fs43.onrender.com/api"
 });
 
 // Request interceptor: Attach bearer token if available
@@ -49,7 +49,7 @@ API.interceptors.response.use(
 
                 try {
                     const refreshRes = await axios.post(
-                        "http://127.0.0.1:8000/api/accounts/token/refresh/",
+                        "https://civicfix-fs43.onrender.com/api/accounts/token/refresh/",
                         { refresh: refreshToken }
                     );
 

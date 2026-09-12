@@ -395,7 +395,7 @@ function AdminComplaintDetails() {
                                                 "http"
                                             )
                                                 ? complaint.image
-                                                : `http://127.0.0.1:8000${complaint.image}`
+                                                : `https://civicfix-fs43.onrender.com${complaint.image}`
                                         }
                                         alt="Complaint"
                                         className="detail-image rounded"
@@ -420,7 +420,7 @@ function AdminComplaintDetails() {
                                                 "http"
                                             )
                                                 ? complaint.resolution_image
-                                                : `http://127.0.0.1:8000${complaint.resolution_image}`
+                                                : `https://civicfix-fs43.onrender.com${complaint.resolution_image}`
                                         }
                                         alt="Resolution proof"
                                         className="detail-image rounded"

@@ -125,7 +125,7 @@ function MyComplaints() {
                                         src={
                                             complaint.image.startsWith("http")
                                                 ? complaint.image
-                                                : `http://127.0.0.1:8000${complaint.image}`
+                                                : `https://civicfix-fs43.onrender.com${complaint.image}`
                                         }
                                         className="card-img-top complaint-image"
                                         alt={complaint.title}
