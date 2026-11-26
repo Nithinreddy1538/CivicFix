@@ -5,6 +5,7 @@ from django.http import FileResponse
 from django.contrib.auth.models import User
 from django.db.models import Count, Avg
 from django.utils import timezone
+from accounts.permissions import has_admin_access
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from rest_framework import status
@@ -37,7 +38,7 @@ class ComplaintListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        if request.user.is_superuser:
+        if has_admin_access(request.user):
             complaints = Complaint.objects.all().order_by('-created_at')
         elif hasattr(request.user, 'profile') and request.user.profile.role == 'officer':
             complaints = Complaint.objects.filter(
@@ -95,7 +96,7 @@ class ComplaintDetailView(APIView):
         try:
             complaint = Complaint.objects.get(pk=pk)
 
-            if self.request.user.is_superuser:
+            if has_admin_access(self.request.user):
                 return complaint
 
             if (
@@ -129,7 +130,7 @@ class ComplaintDetailView(APIView):
         return Response(serializer.data)
 
     def delete(self, request, pk):
-        if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.role == 'admin')):
+        if not has_admin_access(request.user):
             return Response(
                 {'message': 'Admin access required to delete complaints.'},
                 status=status.HTTP_403_FORBIDDEN
@@ -156,7 +157,7 @@ class ComplaintStatusUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request, pk):
-        if not request.user.is_superuser:
+        if not has_admin_access(request.user):
             return Response(
                 {'message': 'Admin access required'},
                 status=status.HTTP_403_FORBIDDEN
@@ -215,7 +216,7 @@ class ComplaintAssignmentView(APIView):
 
     def put(self, request, pk):
 
-        if not request.user.is_superuser:
+        if not has_admin_access(request.user):
             return Response(
                 {'message': 'Admin access required'},
                 status=status.HTTP_403_FORBIDDEN
@@ -241,7 +242,8 @@ class ComplaintAssignmentView(APIView):
         try:
             officer = User.objects.get(
                 id=assigned_to_id,
-                is_staff=True
+                is_active=True,
+                profile__role='officer'
             )
         except User.DoesNotExist:
             return Response(
@@ -408,7 +410,7 @@ class ComplaintAnalyticsView(APIView):
 
     def get(self, request):
 
-        if not request.user.is_superuser:
+        if not has_admin_access(request.user):
             return Response(
                 {'message': 'Admin access required'},
                 status=status.HTTP_403_FORBIDDEN
@@ -645,7 +647,7 @@ class ComplaintReceiptView(APIView):
                 status=404
             )
 
-        if request.user.is_superuser:
+        if has_admin_access(request.user):
             pass
         elif complaint.user == request.user:
             pass

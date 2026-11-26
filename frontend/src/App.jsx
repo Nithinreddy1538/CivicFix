@@ -43,7 +43,7 @@ function App() {
                 <Route
                     path="/dashboard"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRoles={["citizen"]}>
                             <Dashboard />
                         </ProtectedRoute>
                     }
@@ -52,7 +52,7 @@ function App() {
                 <Route
                     path="/report"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRoles={["citizen"]}>
                             <ReportProblem />
                         </ProtectedRoute>
                     }
@@ -61,7 +61,7 @@ function App() {
                 <Route
                     path="/complaints"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRoles={["citizen"]}>
                             <MyComplaints />
                         </ProtectedRoute>
                     }
@@ -70,7 +70,7 @@ function App() {
                 <Route
                     path="/complaints/:id"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRoles={["citizen"]}>
                             <ComplaintDetails />
                         </ProtectedRoute>
                     }
@@ -97,7 +97,7 @@ function App() {
                 <Route
                     path="/admin"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRoles={["admin"]}>
                             <AdminDashboard />
                         </ProtectedRoute>
                     }
@@ -106,7 +106,7 @@ function App() {
                 <Route
                     path="/admin/complaints/:id"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRoles={["admin"]}>
                             <AdminComplaintDetails />
                         </ProtectedRoute>
                     }
@@ -115,7 +115,7 @@ function App() {
                 <Route
                     path="/officer"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRoles={["officer"]}>
                             <OfficerDashboard />
                         </ProtectedRoute>
                     }
@@ -124,7 +124,7 @@ function App() {
                 <Route
                     path="/officer/complaints/:id"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRoles={["officer"]}>
                             <OfficerComplaintDetails />
                         </ProtectedRoute>
                     }

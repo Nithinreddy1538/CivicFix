@@ -8,14 +8,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from .serializers import RegisterSerializer
 from .models import UserProfile
-
-
-def has_admin_access(user):
-    profile = getattr(user, 'profile', None)
-    return bool(
-        user.is_authenticated
-        and (user.is_superuser or (user.is_staff and profile and profile.role == 'admin'))
-    )
+from .permissions import has_admin_access
 
 
 class RegisterView(APIView):
@@ -123,7 +116,6 @@ class StaffUserListView(APIView):
             )
 
         users = User.objects.filter(
-            is_staff=True,
             is_active=True,
             profile__role='officer'
         ).order_by('-date_joined')
@@ -197,7 +189,7 @@ class StaffUserListView(APIView):
             email=email,
             first_name=first_name,
             last_name=last_name,
-            is_staff=True,
+            is_staff=False,
             is_active=True
         )
 
@@ -223,4 +215,72 @@ class StaffUserListView(APIView):
             },
             status=status.HTTP_201_CREATED
         )
+
+
+class AdminUserManagementView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        if not has_admin_access(request.user):
+            return Response(
+                {'message': 'Admin access required to view account records.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        profiles = UserProfile.objects.select_related('user').filter(
+            role__in=['citizen', 'officer'],
+            user__is_superuser=False,
+        ).order_by('-user__date_joined')
+
+        accounts = []
+        for profile in profiles:
+            user = profile.user
+            accounts.append({
+                'id': user.id,
+                'username': user.username,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'role': profile.role,
+                'department': profile.department,
+                'is_active': user.is_active,
+                'date_joined': user.date_joined.strftime('%Y-%m-%d') if user.date_joined else '',
+            })
+
+        return Response(accounts)
+
+    def patch(self, request):
+        if not has_admin_access(request.user):
+            return Response(
+                {'message': 'Admin access required to update account records.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        user_id = request.data.get('user_id')
+        is_active = request.data.get('is_active')
+        if user_id is None or not isinstance(is_active, bool):
+            return Response(
+                {'message': 'Provide a user_id and a boolean is_active value.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        profile = UserProfile.objects.select_related('user').filter(
+            user_id=user_id,
+            role__in=['citizen', 'officer'],
+            user__is_superuser=False,
+        ).first()
+        if profile is None:
+            return Response(
+                {'message': 'Citizen or agent account not found.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        profile.user.is_active = is_active
+        profile.user.save(update_fields=['is_active'])
+
+        return Response({
+            'message': 'Account activated.' if is_active else 'Account deactivated.',
+            'user_id': profile.user_id,
+            'is_active': is_active,
+        })
 

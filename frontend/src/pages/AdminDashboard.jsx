@@ -5,6 +5,7 @@ import ComplaintMap from "../components/ComplaintMap";
 import ComplaintHeatmap from "../components/ComplaintHeatmap";
 import AdminAnalytics from "../components/AdminAnalytics";
 import AdminCommandCenter from "../components/AdminCommandCenter";
+import AdminUserManagement from "../components/AdminUserManagement";
 
 function AdminDashboard() {
 
@@ -595,6 +596,8 @@ function AdminDashboard() {
                     )}
                 </div>
             </div>
+
+            <AdminUserManagement />
 
             <div className="card shadow-sm mb-4">
 

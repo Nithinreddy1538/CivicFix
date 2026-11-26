@@ -57,9 +57,11 @@ function Navbar() {
 
                         {token ? (
                             <>
-                                <Link className={`nav-link ${isActive("/dashboard")}`} to="/dashboard">
-                                    Dashboard
-                                </Link>
+                                {role === "citizen" && (
+                                    <Link className={`nav-link ${isActive("/dashboard")}`} to="/dashboard">
+                                        Dashboard
+                                    </Link>
+                                )}
 
                                 {role === "admin" && (
                                     <Link
@@ -67,7 +69,7 @@ function Navbar() {
                                         to="/admin"
                                     >
                                         <i className="bi bi-shield-lock me-1"></i>
-                                        Admin
+                                        Admin Console
                                     </Link>
                                 )}
 
@@ -77,18 +79,22 @@ function Navbar() {
                                         to="/officer"
                                     >
                                         <i className="bi bi-person-badge me-1"></i>
-                                        Officer
+                                        Agent Workspace
                                     </Link>
                                 )}
 
-                                <Link className={`nav-link ${isActive("/report")}`} to="/report">
-                                    <i className="bi bi-plus-circle me-1"></i>
-                                    Report Problem
-                                </Link>
+                                {role === "citizen" && (
+                                    <>
+                                        <Link className={`nav-link ${isActive("/report")}`} to="/report">
+                                            <i className="bi bi-plus-circle me-1"></i>
+                                            Report Problem
+                                        </Link>
 
-                                <Link className={`nav-link ${isActive("/complaints")}`} to="/complaints">
-                                    My Complaints
-                                </Link>
+                                        <Link className={`nav-link ${isActive("/complaints")}`} to="/complaints">
+                                            My Complaints
+                                        </Link>
+                                    </>
+                                )}
 
                                 <Link className={`nav-link nav-bell-link position-relative ${isActive("/notifications")}`} to="/notifications">
                                     <i className="bi bi-bell me-1"></i>
