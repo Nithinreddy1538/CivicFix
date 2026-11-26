@@ -1,153 +1,148 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api";
+import "./Login.css";
+
+const loginRoles = [
+    {
+        id: "citizen",
+        title: "Citizen",
+        detail: "Report issues and follow their progress",
+        icon: "bi-people",
+        badge: "Community portal",
+    },
+    {
+        id: "officer",
+        title: "Agent / Officer",
+        detail: "Manage assigned cases and field updates",
+        icon: "bi-person-badge",
+        badge: "Field operations",
+    },
+    {
+        id: "admin",
+        title: "Administrator",
+        detail: "Oversee reports, teams, and city insights",
+        icon: "bi-building-gear",
+        badge: "Management portal",
+    },
+];
 
 function Login() {
     const navigate = useNavigate();
-
+    const [selectedRole, setSelectedRole] = useState("citizen");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const roleInfo = loginRoles.find((role) => role.id === selectedRole);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
         setError("");
         setLoading(true);
 
         try {
-            const response = await API.post("/accounts/login/", {
-                username,
-                password
-            });
+            const response = await API.post("/accounts/login/", { username, password });
+            const actualRole = response.data.role;
+
+            if (actualRole !== selectedRole) {
+                setError(`This account is registered as ${actualRole === "officer" ? "an agent / officer" : `a ${actualRole}`}. Choose the matching login and try again.`);
+                return;
+            }
 
             localStorage.setItem("access", response.data.access);
             localStorage.setItem("refresh", response.data.refresh);
             localStorage.setItem("username", response.data.username);
-            localStorage.setItem("role", response.data.role);
+            localStorage.setItem("role", actualRole);
             localStorage.setItem("is_admin", response.data.is_admin);
             localStorage.setItem("is_officer", response.data.is_officer);
 
-            if (response.data.role === "admin") {
-                navigate("/admin");
-            } else if (response.data.role === "officer") {
-                navigate("/officer");
-            } else {
-                navigate("/dashboard");
-            }
-
-        } catch (error) {
-            setError(
-                error.response?.data?.message ||
-                "Invalid username or password"
-            );
+            navigate(actualRole === "admin" ? "/admin" : actualRole === "officer" ? "/officer" : "/dashboard");
+        } catch (loginError) {
+            setError(loginError.response?.data?.message || "Invalid username or password. Please try again.");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="container py-5 position-relative page-enter">
-            <div className="hero-orb hero-orb-1"></div>
-            <div className="hero-orb hero-orb-2"></div>
+        <main className="login-page page-enter">
+            <div className="login-glow login-glow-one" aria-hidden="true" />
+            <div className="login-glow login-glow-two" aria-hidden="true" />
 
-            <div className="row justify-content-center position-relative" style={{ zIndex: 2 }}>
-                <div className="col-md-5 col-lg-4">
+            <div className="login-shell">
+                <section className="login-intro" aria-labelledby="login-heading">
+                    <Link to="/" className="login-brand" aria-label="CivicFix home">
+                        <span className="login-brand-mark"><i className="bi bi-buildings" /></span>
+                        <span>Civic<span>Fix</span></span>
+                    </Link>
+                    <div className="login-intro-copy">
+                        <span className="login-eyebrow"><span /> YOUR CITY, BETTER TOGETHER</span>
+                        <h1 id="login-heading">Good to have<br />you <em>back.</em></h1>
+                        <p>One place to raise concerns, coordinate local action, and make progress visible.</p>
+                    </div>
+                    <div className="login-trust-note">
+                        <span className="login-trust-icon"><i className="bi bi-shield-check" /></span>
+                        <span><strong>A more responsive city starts here.</strong><small>Secure access for every CivicFix community member.</small></span>
+                    </div>
+                    <span className="login-decorative-number" aria-hidden="true">01</span>
+                </section>
 
-                    <div className="auth-card shadow-lg">
-                        <div className="auth-header">
-                            <div className="p-2 rounded-circle bg-white text-success d-inline-flex align-items-center justify-content-center mb-2" style={{ width: "48px", height: "48px" }}>
-                                <i className="bi bi-shield-lock fs-4"></i>
-                            </div>
-                            <h4 className="fw-bold mb-1">Welcome Back</h4>
-                            <p className="small mb-0 opacity-75">Sign in to your CivicFix portal</p>
-                        </div>
-
-                        <div className="card-body p-4">
-
-                            {error && (
-                                <div className="alert alert-danger py-2 px-3 small d-flex align-items-center gap-2">
-                                    <i className="bi bi-exclamation-circle-fill"></i>
-                                    <span>{error}</span>
-                                </div>
-                            )}
-
-                            <form onSubmit={handleSubmit}>
-
-                                <div className="mb-3">
-                                    <label className="form-label small fw-semibold text-muted">
-                                        Username
-                                    </label>
-                                    <div className="input-icon-wrapper">
-                                        <i className="bi bi-person"></i>
-                                        <input
-                                            className="form-control"
-                                            placeholder="Enter your username"
-                                            value={username}
-                                            onChange={(e) => setUsername(e.target.value)}
-                                            required
-                                            autoFocus
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="mb-4">
-                                    <label className="form-label small fw-semibold text-muted">
-                                        Password
-                                    </label>
-                                    <div className="input-icon-wrapper position-relative">
-                                        <i className="bi bi-key"></i>
-                                        <input
-                                            type={showPassword ? "text" : "password"}
-                                            className="form-control pe-5"
-                                            placeholder="Enter your password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required
-                                        />
-                                        <button
-                                            type="button"
-                                            className="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted text-decoration-none pe-3"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                        >
-                                            <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <button
-                                    className="btn btn-success btn-shimmer w-100 py-2 shadow-sm fw-bold"
-                                    disabled={loading}
-                                >
-                                    {loading ? (
-                                        <>
-                                            <span className="spinner-border spinner-border-sm me-2"></span>
-                                            Authenticating...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <i className="bi bi-box-arrow-in-right me-2"></i>
-                                            Sign In
-                                        </>
-                                    )}
-                                </button>
-
-                            </form>
-
-                            <div className="text-center mt-4 pt-3 border-top">
-                                <span className="small text-muted">Don't have an account? </span>
-                                <Link to="/register" className="small text-success fw-bold text-decoration-none">
-                                    Create Account
-                                </Link>
-                            </div>
-
-                        </div>
+                <section className="login-panel" aria-label="Sign in">
+                    <div className="login-panel-heading">
+                        <span className="login-kicker">CIVICFIX ACCOUNT</span>
+                        <h2>Sign in to continue</h2>
+                        <p>Choose your workspace to get started.</p>
                     </div>
 
-                </div>
+                    <div className="login-role-grid" role="group" aria-label="Choose your account type">
+                        {loginRoles.map((role) => (
+                            <button
+                                key={role.id}
+                                type="button"
+                                className={`login-role-option${selectedRole === role.id ? " is-selected" : ""}`}
+                                aria-pressed={selectedRole === role.id}
+                                onClick={() => { setSelectedRole(role.id); setError(""); }}
+                            >
+                                <span className="login-role-icon"><i className={`bi ${role.icon}`} /></span>
+                                <span className="login-role-copy"><strong>{role.title}</strong><small>{role.badge}</small></span>
+                                <span className="login-role-check"><i className="bi bi-check2" /></span>
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="login-selected-note"><i className={`bi ${roleInfo.icon}`} /><span>{roleInfo.detail}</span></div>
+
+                    {error && <div className="login-error" role="alert"><i className="bi bi-exclamation-circle-fill" /><span>{error}</span></div>}
+
+                    <form className="login-form" onSubmit={handleSubmit}>
+                        <label className="login-field-label" htmlFor="login-username">Username</label>
+                        <div className="login-input-wrap">
+                            <i className="bi bi-person" aria-hidden="true" />
+                            <input id="login-username" type="text" autoComplete="username" placeholder="Enter your username" value={username} onChange={(event) => setUsername(event.target.value)} required />
+                        </div>
+
+                        <div className="login-password-heading">
+                            <label className="login-field-label" htmlFor="login-password">Password</label>
+                        </div>
+                        <div className="login-input-wrap">
+                            <i className="bi bi-lock" aria-hidden="true" />
+                            <input id="login-password" type={showPassword ? "text" : "password"} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={(event) => setPassword(event.target.value)} required />
+                            <button className="login-password-toggle" type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? "Hide password" : "Show password"}><i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`} /></button>
+                        </div>
+
+                        <button className="login-submit" type="submit" disabled={loading}>
+                            {loading ? <><span className="spinner-border spinner-border-sm" /> Signing you in…</> : <>Continue to {roleInfo.title}<i className="bi bi-arrow-right" /></>}
+                        </button>
+                    </form>
+
+                    <div className="login-register">New to CivicFix? <Link to="/register">Create a citizen account <i className="bi bi-arrow-up-right" /></Link></div>
+                    <div className="login-panel-footer"><i className="bi bi-lock-fill" /> Your account details are protected</div>
+                </section>
             </div>
-        </div>
+        </main>
     );
 }
 
