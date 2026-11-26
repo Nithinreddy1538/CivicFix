@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
 import Register from "./pages/Register";
 import TrackComplaint from "./pages/TrackComplaint";
 import PublicComplaintTracking from "./pages/PublicComplaintTracking";
@@ -30,6 +31,8 @@ function App() {
                 <Route path="/" element={<Home />} />
 
                 <Route path="/login" element={<Login />} />
+
+                <Route path="/forgot-password" element={<ForgotPassword />} />
 
                 <Route path="/register" element={<Register />} />
 

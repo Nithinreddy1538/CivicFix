@@ -135,6 +135,8 @@
 .login-input-wrap input { width: 100%; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; color: #23382e; background: transparent; font: inherit; font-size: 12px; }
 .login-input-wrap input::placeholder { color: #a4afa9; }
 .login-password-heading { display: flex; justify-content: space-between; }
+.login-forgot-link { margin-bottom: 7px; color: #087b55; font-size: 10px; font-weight: 700; text-decoration: none; }
+.login-forgot-link:hover { color: #075e43; text-decoration: underline; }
 .login-password-toggle { display: grid; place-items: center; width: 28px; height: 32px; border: 0; color: #77877e; background: transparent; cursor: pointer; }
 .login-password-toggle:focus-visible { outline: 2px solid #16835c; border-radius: 5px; }
 .login-submit { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 46px; margin-top: 7px; border: 0; border-radius: 10px; color: #fff; background: linear-gradient(105deg, #087b55, #119567); box-shadow: 0 7px 16px rgba(8,123,85,.2); font-size: 12px; font-weight: 750; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background .18s ease; }

@@ -136,6 +136,7 @@ function Login() {
 
                         <div className="login-password-heading">
                             <label className="login-field-label" htmlFor="login-password">Password</label>
+                            {selectedRole !== "admin" && <Link className="login-forgot-link" to="/forgot-password">Forgot password?</Link>}
                         </div>
                         <div className="login-input-wrap">
                             <i className="bi bi-lock" aria-hidden="true" />

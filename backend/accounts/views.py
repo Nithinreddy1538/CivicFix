@@ -1,4 +1,12 @@
+import logging
+import secrets
+from datetime import timedelta
+
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.password_validation import validate_password
+from django.conf import settings
+from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -6,9 +14,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.utils import timezone
 from .serializers import RegisterSerializer
-from .models import UserProfile
+from .models import PasswordResetCode, UserProfile
 from .permissions import has_admin_access
+
+logger = logging.getLogger(__name__)
 
 
 class RegisterView(APIView):
@@ -101,6 +112,122 @@ class LoginView(APIView):
                 'is_officer': role == 'officer'
             }
         )
+
+
+class PasswordResetRequestView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = str(request.data.get('email', '')).strip().lower()
+        generic_response = {
+            'message': 'If this email belongs to a citizen or officer account, a reset code has been sent.'
+        }
+        if not email:
+            return Response({'message': 'Enter your registered email address.'}, status=400)
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response({'message': 'Enter a valid email address.'}, status=400)
+
+        user = User.objects.filter(
+            email__iexact=email,
+            is_active=True,
+            profile__role__in=['citizen', 'officer'],
+        ).first()
+        if not user:
+            return Response(generic_response, status=200)
+
+        now = timezone.now()
+        recent_requests = PasswordResetCode.objects.filter(
+            user=user,
+            created_at__gte=now - timedelta(hours=1),
+        ).count()
+        if recent_requests >= 5:
+            return Response(generic_response, status=200)
+
+        PasswordResetCode.objects.filter(user=user, used_at__isnull=True).update(used_at=now)
+        code = f'{secrets.randbelow(1_000_000):06d}'
+        PasswordResetCode.objects.create(
+            user=user,
+            code_hash=make_password(code),
+            expires_at=now + timedelta(minutes=10),
+        )
+        try:
+            sent = send_mail(
+                subject='Your CivicFix password reset code',
+                message=(
+                    f'Your CivicFix password reset code is {code}. '
+                    'Enter this code on the password reset page. It expires in 10 minutes. '
+                    'If you did not request this, you can ignore this email.'
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+            if not sent:
+                raise RuntimeError('The configured mail service did not accept the reset email.')
+        except Exception:
+            logger.exception('Unable to deliver a CivicFix password reset email.')
+            PasswordResetCode.objects.filter(user=user, used_at__isnull=True).update(used_at=now)
+            return Response(
+                {'message': 'Password reset email delivery is unavailable right now. Please contact the site administrator.'},
+                status=503,
+            )
+
+        return Response(generic_response, status=200)
+
+
+class PasswordResetConfirmView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = str(request.data.get('email', '')).strip().lower()
+        code = str(request.data.get('code', '')).strip()
+        new_password = str(request.data.get('new_password', ''))
+        confirm_password = str(request.data.get('confirm_password', ''))
+
+        if not email or not code or not new_password or not confirm_password:
+            return Response({'message': 'Email, reset code, and both password fields are required.'}, status=400)
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response({'message': 'Enter a valid email address.'}, status=400)
+        if new_password != confirm_password:
+            return Response({'message': 'The passwords do not match.'}, status=400)
+
+        now = timezone.now()
+        reset_code = PasswordResetCode.objects.filter(
+            user__email__iexact=email,
+            user__is_active=True,
+            user__profile__role__in=['citizen', 'officer'],
+            used_at__isnull=True,
+            expires_at__gt=now,
+            attempts__lt=5,
+        ).select_related('user').first()
+        if not reset_code:
+            return Response({'message': 'The reset code is invalid or expired. Request a new code.'}, status=400)
+
+        if not check_password(code, reset_code.code_hash):
+            reset_code.attempts += 1
+            if reset_code.attempts >= 5:
+                reset_code.used_at = now
+            reset_code.save(update_fields=['attempts', 'used_at'])
+            return Response({'message': 'The reset code is invalid or expired. Check the code or request a new one.'}, status=400)
+
+        try:
+            validate_password(new_password, user=reset_code.user)
+        except ValidationError as error:
+            return Response({'message': ' '.join(error.messages)}, status=400)
+
+        reset_code.user.set_password(new_password)
+        reset_code.user.save(update_fields=['password'])
+        reset_code.used_at = now
+        reset_code.save(update_fields=['used_at'])
+        PasswordResetCode.objects.filter(
+            user=reset_code.user,
+            used_at__isnull=True,
+        ).update(used_at=now)
+        return Response({'message': 'Password reset successfully. You can now sign in with your new password.'})
 
 
 class StaffUserListView(APIView):
