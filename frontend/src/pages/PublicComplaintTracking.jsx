@@ -71,7 +71,7 @@ function PublicComplaintTracking() {
         <div className="container py-5 page-enter">
             {/* Header Hero Card */}
             <div className="card shadow-sm border-0 mb-4" style={{ borderRadius: "18px", overflow: "hidden" }}>
-                <div className="card-body p-4 p-md-5" style={{ background: "linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)" }}>
+                <div className="card-body p-4 p-md-5" style={{ background: "linear-gradient(135deg, #ffffff 0%, #fff8e9 100%)" }}>
                     <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
                         <div>
                             <span className="badge bg-light text-dark border px-3 py-1 mb-2 fw-mono">

@@ -106,7 +106,7 @@ function Navbar() {
                 >
                     <div className="civicfix-drawer-heading d-lg-none">
                         <span className="small text-uppercase fw-bold">Navigation</span>
-                        <button type="button" className="btn-close btn-close-white" aria-label="Close navigation menu" onClick={closeMenu}></button>
+                        <button type="button" className="btn-close" aria-label="Close navigation menu" onClick={closeMenu}></button>
                     </div>
                     <div className="navbar-nav ms-auto align-items-lg-center gap-1">
                         <Link onClick={closeMenu} className={`nav-link ${isActive("/")}`} to="/">

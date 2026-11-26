@@ -161,7 +161,7 @@ function Home() {
 
             {/* How CivicFix Works Interactive Step Flow */}
             <section className="container py-5">
-                <div className="card shadow-sm p-4 p-md-5 border-0" style={{ background: "linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)", borderRadius: "20px" }}>
+                <div className="card shadow-sm p-4 p-md-5 border-0" style={{ background: "linear-gradient(135deg, #ffffff 0%, #fff8e9 100%)", borderRadius: "20px" }}>
                     <div className="text-center mb-5">
                         <span className="badge bg-success mb-2 px-3 py-2">Workflow</span>
                         <h3 className="fw-bold">How Your Issue Gets Fixed</h3>
