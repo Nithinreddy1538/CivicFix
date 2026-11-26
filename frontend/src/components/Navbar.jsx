@@ -9,6 +9,9 @@ function Navbar() {
     const role = localStorage.getItem("role");
     const username = localStorage.getItem("username");
     const [unreadCount, setUnreadCount] = useState(0);
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    const closeMenu = () => setMenuOpen(false);
 
     const refreshUnreadCount = useCallback(async () => {
         if (!token) {
@@ -35,6 +38,28 @@ function Navbar() {
         };
     }, [refreshUnreadCount, location.pathname]);
 
+    useEffect(() => {
+        closeMenu();
+    }, [location.pathname]);
+
+    useEffect(() => {
+        if (!menuOpen) return undefined;
+        const closeOnEscape = (event) => {
+            if (event.key === "Escape") closeMenu();
+        };
+        const closeOnDesktop = () => {
+            if (window.innerWidth >= 992) closeMenu();
+        };
+        document.body.classList.add("civicfix-menu-open");
+        window.addEventListener("keydown", closeOnEscape);
+        window.addEventListener("resize", closeOnDesktop);
+        return () => {
+            document.body.classList.remove("civicfix-menu-open");
+            window.removeEventListener("keydown", closeOnEscape);
+            window.removeEventListener("resize", closeOnDesktop);
+        };
+    }, [menuOpen]);
+
     const logout = () => {
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");
@@ -55,7 +80,7 @@ function Navbar() {
     ];
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+        <nav className="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm civicfix-navbar">
             <div className="container">
                 <Link className="navbar-brand fw-bold" to="/">
                     <span className="p-1 rounded-circle bg-white text-success d-inline-flex align-items-center justify-content-center me-1" style={{ width: "32px", height: "32px" }}>
@@ -67,25 +92,28 @@ function Navbar() {
                 <button
                     className="navbar-toggler border-0"
                     type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#civicfixNavbar"
                     aria-controls="civicfixNavbar"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
+                    aria-expanded={menuOpen}
+                    aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+                    onClick={() => setMenuOpen(open => !open)}
                 >
-                    <span className="navbar-toggler-icon"></span>
+                    <i className={`bi ${menuOpen ? "bi-x-lg" : "bi-list"}`} aria-hidden="true"></i>
                 </button>
 
                 <div
-                    className="collapse navbar-collapse"
+                    className={`navbar-collapse civicfix-nav-drawer ${menuOpen ? "is-open" : ""}`}
                     id="civicfixNavbar"
                 >
+                    <div className="civicfix-drawer-heading d-lg-none">
+                        <span className="small text-uppercase fw-bold">Navigation</span>
+                        <button type="button" className="btn-close btn-close-white" aria-label="Close navigation menu" onClick={closeMenu}></button>
+                    </div>
                     <div className="navbar-nav ms-auto align-items-lg-center gap-1">
-                        <Link className={`nav-link ${isActive("/")}`} to="/">
+                        <Link onClick={closeMenu} className={`nav-link ${isActive("/")}`} to="/">
                             Home
                         </Link>
 
-                        <Link className={`nav-link ${isActive("/track")}`} to="/track">
+                        <Link onClick={closeMenu} className={`nav-link ${isActive("/track")}`} to="/track">
                             <i className="bi bi-search me-1"></i>
                             Track
                         </Link>
@@ -93,7 +121,7 @@ function Navbar() {
                         {token ? (
                             <>
                                 {role === "citizen" && (
-                                    <Link className={`nav-link ${isActive("/dashboard")}`} to="/dashboard">
+                                    <Link onClick={closeMenu} className={`nav-link ${isActive("/dashboard")}`} to="/dashboard">
                                         Dashboard
                                     </Link>
                                 )}
@@ -103,6 +131,7 @@ function Navbar() {
                                         <Link
                                             className={`nav-link ${isActive("/admin")}`}
                                             to="/admin"
+                                            onClick={closeMenu}
                                         >
                                             <i className="bi bi-shield-lock me-1"></i>
                                             Admin Console
@@ -124,6 +153,7 @@ function Navbar() {
                                                             className="dropdown-item"
                                                             to={`/admin#${section.id}`}
                                                             onClick={() => {
+                                                                closeMenu();
                                                                 if (location.pathname === "/admin") {
                                                                     window.setTimeout(() => {
                                                                         document.getElementById(section.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -143,6 +173,7 @@ function Navbar() {
 
                                 {role === "officer" && (
                                     <Link
+                                        onClick={closeMenu}
                                         className={`nav-link ${isActive("/officer")}`}
                                         to="/officer"
                                     >
@@ -153,18 +184,18 @@ function Navbar() {
 
                                 {role === "citizen" && (
                                     <>
-                                        <Link className={`nav-link ${isActive("/report")}`} to="/report">
+                                        <Link onClick={closeMenu} className={`nav-link ${isActive("/report")}`} to="/report">
                                             <i className="bi bi-plus-circle me-1"></i>
                                             Report Problem
                                         </Link>
 
-                                        <Link className={`nav-link ${isActive("/complaints")}`} to="/complaints">
+                                        <Link onClick={closeMenu} className={`nav-link ${isActive("/complaints")}`} to="/complaints">
                                             My Complaints
                                         </Link>
                                     </>
                                 )}
 
-                                <Link className={`nav-link nav-bell-link position-relative ${isActive("/notifications")}`} to="/notifications">
+                                <Link onClick={closeMenu} className={`nav-link nav-bell-link position-relative ${isActive("/notifications")}`} to="/notifications">
                                     <i className="bi bi-bell me-1"></i>
                                     Notifications
                                     {unreadCount > 0 && <span className="badge rounded-pill bg-warning text-dark ms-1" aria-label={`${unreadCount} unread notifications`}>
@@ -172,7 +203,7 @@ function Navbar() {
                                     </span>}
                                 </Link>
 
-                                <Link className={`nav-link ${isActive("/ai-assistant")}`} to="/ai-assistant">
+                                <Link onClick={closeMenu} className={`nav-link ${isActive("/ai-assistant")}`} to="/ai-assistant">
                                     <i className="bi bi-stars me-1 text-warning"></i>
                                     AI Assistant
                                 </Link>
@@ -195,11 +226,11 @@ function Navbar() {
                             </>
                         ) : (
                             <>
-                                <Link className={`nav-link ${isActive("/login")}`} to="/login">
+                                <Link onClick={closeMenu} className={`nav-link ${isActive("/login")}`} to="/login">
                                     Login
                                 </Link>
 
-                                <Link className="btn btn-light btn-sm px-3 ms-lg-2 btn-shimmer fw-semibold text-success shadow-sm" to="/register">
+                                <Link onClick={closeMenu} className="btn btn-light btn-sm px-3 ms-lg-2 btn-shimmer fw-semibold text-success shadow-sm" to="/register">
                                     <i className="bi bi-person-plus me-1"></i>
                                     Register
                                 </Link>
@@ -208,6 +239,7 @@ function Navbar() {
                     </div>
                 </div>
             </div>
+            {menuOpen && <button className="civicfix-nav-backdrop d-lg-none" aria-label="Close navigation menu" onClick={closeMenu} />}
         </nav>
     );
 }
