@@ -24,7 +24,20 @@ function Notifications() {
                 API.get("/notifications/"),
                 API.get("/complaints/").catch(() => ({ data: [] }))
             ]);
-            setNotifications(notificationResult.data);
+            let loadedNotifications = notificationResult.data;
+            if (loadedNotifications.some(notification => !notification.is_read)) {
+                try {
+                    await API.put("/notifications/read-all/");
+                    loadedNotifications = loadedNotifications.map(notification => ({
+                        ...notification,
+                        is_read: true
+                    }));
+                    window.dispatchEvent(new Event("notifications-updated"));
+                } catch {
+                    setError("Notifications loaded, but unread messages could not be marked as read. Use Mark All as Read to retry.");
+                }
+            }
+            setNotifications(loadedNotifications);
 
             const detailBase = role === "admin"
                 ? "/admin/complaints/"
