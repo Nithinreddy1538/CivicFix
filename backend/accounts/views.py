@@ -14,6 +14,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.core import signing
 from django.utils import timezone
 from .serializers import RegisterSerializer
 from .models import PasswordResetCode, UserProfile
@@ -177,23 +178,18 @@ class PasswordResetRequestView(APIView):
         return Response(generic_response, status=200)
 
 
-class PasswordResetConfirmView(APIView):
+class PasswordResetVerifyCodeView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
         email = str(request.data.get('email', '')).strip().lower()
         code = str(request.data.get('code', '')).strip()
-        new_password = str(request.data.get('new_password', ''))
-        confirm_password = str(request.data.get('confirm_password', ''))
-
-        if not email or not code or not new_password or not confirm_password:
-            return Response({'message': 'Email, reset code, and both password fields are required.'}, status=400)
+        if not email or not code:
+            return Response({'message': 'Email and reset code are required.'}, status=400)
         try:
             validate_email(email)
         except ValidationError:
             return Response({'message': 'Enter a valid email address.'}, status=400)
-        if new_password != confirm_password:
-            return Response({'message': 'The passwords do not match.'}, status=400)
 
         now = timezone.now()
         reset_code = PasswordResetCode.objects.filter(
@@ -214,6 +210,62 @@ class PasswordResetConfirmView(APIView):
             reset_code.save(update_fields=['attempts', 'used_at'])
             return Response({'message': 'The reset code is invalid or expired. Check the code or request a new one.'}, status=400)
 
+        reset_token = signing.dumps(
+            {
+                'email': email,
+                'user_id': reset_code.user_id,
+                'code_id': reset_code.id,
+            },
+            salt='civicfix.password-reset',
+        )
+        return Response({'message': 'Email verified. You can now choose a new password.', 'reset_token': reset_token})
+
+
+class PasswordResetConfirmView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = str(request.data.get('email', '')).strip().lower()
+        reset_token = str(request.data.get('reset_token', '')).strip()
+        new_password = str(request.data.get('new_password', ''))
+        confirm_password = str(request.data.get('confirm_password', ''))
+
+        if not email or not reset_token or not new_password or not confirm_password:
+            return Response({'message': 'Email, verified reset session, and both password fields are required.'}, status=400)
+        if new_password != confirm_password:
+            return Response({'message': 'The passwords do not match.'}, status=400)
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response({'message': 'Enter a valid email address.'}, status=400)
+
+        try:
+            token_data = signing.loads(
+                reset_token,
+                salt='civicfix.password-reset',
+                max_age=600,
+            )
+        except signing.SignatureExpired:
+            return Response({'message': 'Email verification expired. Request and verify a new code.'}, status=400)
+        except signing.BadSignature:
+            return Response({'message': 'Email verification is invalid. Request and verify a new code.'}, status=400)
+
+        if token_data.get('email') != email:
+            return Response({'message': 'Email verification is invalid. Request and verify a new code.'}, status=400)
+
+        reset_code = PasswordResetCode.objects.filter(
+            pk=token_data.get('code_id'),
+            user_id=token_data.get('user_id'),
+            user__email__iexact=email,
+            user__is_active=True,
+            user__profile__role__in=['citizen', 'officer'],
+            used_at__isnull=True,
+            expires_at__gt=timezone.now(),
+            attempts__lt=5,
+        ).select_related('user').first()
+        if not reset_code:
+            return Response({'message': 'Email verification expired. Request and verify a new code.'}, status=400)
+
         try:
             validate_password(new_password, user=reset_code.user)
         except ValidationError as error:
@@ -221,12 +273,12 @@ class PasswordResetConfirmView(APIView):
 
         reset_code.user.set_password(new_password)
         reset_code.user.save(update_fields=['password'])
-        reset_code.used_at = now
+        reset_code.used_at = timezone.now()
         reset_code.save(update_fields=['used_at'])
         PasswordResetCode.objects.filter(
             user=reset_code.user,
             used_at__isnull=True,
-        ).update(used_at=now)
+        ).update(used_at=timezone.now())
         return Response({'message': 'Password reset successfully. You can now sign in with your new password.'})
 
 

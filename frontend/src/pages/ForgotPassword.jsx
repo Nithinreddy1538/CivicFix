@@ -9,6 +9,8 @@ function ForgotPassword() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [codeSent, setCodeSent] = useState(false);
+    const [emailVerified, setEmailVerified] = useState(false);
+    const [resetToken, setResetToken] = useState("");
     const [complete, setComplete] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -20,6 +22,11 @@ function ForgotPassword() {
         try {
             const response = await API.post("/accounts/password-reset/request/", { email });
             setCodeSent(true);
+            setEmailVerified(false);
+            setResetToken("");
+            setCode("");
+            setPassword("");
+            setConfirmPassword("");
             setError("");
             setNotice(response.data.message);
         } catch (requestError) {
@@ -30,6 +37,22 @@ function ForgotPassword() {
     };
 
     const [notice, setNotice] = useState("");
+
+    const verifyCode = async (event) => {
+        event.preventDefault();
+        setError("");
+        setLoading(true);
+        try {
+            const response = await API.post("/accounts/password-reset/verify-code/", { email, code });
+            setResetToken(response.data.reset_token);
+            setEmailVerified(true);
+            setNotice(response.data.message);
+        } catch (verifyError) {
+            setError(verifyError.response?.data?.message || "That code could not be verified. Check it and try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const resetPassword = async (event) => {
         event.preventDefault();
@@ -42,7 +65,7 @@ function ForgotPassword() {
         try {
             const response = await API.post("/accounts/password-reset/confirm/", {
                 email,
-                code,
+                reset_token: resetToken,
                 new_password: password,
                 confirm_password: confirmPassword,
             });
@@ -61,14 +84,16 @@ function ForgotPassword() {
                 <Link to="/login" className="reset-brand">
                     <span><i className="bi bi-shield-check" /></span> CivicFix
                 </Link>
-                <div className="reset-icon"><i className={`bi ${complete ? "bi-check2-circle" : codeSent ? "bi-envelope-check" : "bi-key"}`} /></div>
+                <div className="reset-icon"><i className={`bi ${complete ? "bi-check2-circle" : emailVerified ? "bi-lock" : codeSent ? "bi-envelope-check" : "bi-key"}`} /></div>
                 <span className="reset-eyebrow">ACCOUNT RECOVERY</span>
-                <h1 id="reset-title">{complete ? "Password updated" : codeSent ? "Check your email" : "Forgot your password?"}</h1>
+                <h1 id="reset-title">{complete ? "Password updated" : emailVerified ? "Choose a new password" : codeSent ? "Verify your account" : "Forgot your password?"}</h1>
                 <p className="reset-description">
                     {complete
                         ? "Your password has been changed. You can now sign in with it."
-                        : codeSent
-                            ? "If this is a registered citizen or officer email, a six-digit code has been sent. Enter it with your new password below. The code expires in 10 minutes."
+                        : emailVerified
+                            ? "Your email is verified. Set and confirm a new password for your account."
+                            : codeSent
+                                ? "Enter the six-digit code sent to your registered email. Your new-password fields will appear after the code is verified. The code expires in 10 minutes."
                             : "Enter the email address registered to your citizen or officer account. We’ll send a one-time code to verify it’s yours."}
                 </p>
 
@@ -83,18 +108,24 @@ function ForgotPassword() {
                     </button>
                 </form>}
 
-                {!complete && codeSent && <form onSubmit={resetPassword}>
+                {!complete && codeSent && !emailVerified && <form onSubmit={verifyCode}>
                     <div className="reset-email-summary"><i className="bi bi-envelope-check" /><span>Code sent to <strong>{email}</strong></span></div>
                     <label htmlFor="reset-code">Six-digit email code</label>
                     <div className="reset-input-wrap"><i className="bi bi-shield-lock" /><input id="reset-code" type="text" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} value={code} onChange={event => setCode(event.target.value.replace(/\D/g, "").slice(0, 6))} placeholder="000000" required /></div>
+                    <button className="reset-submit" type="submit" disabled={loading || code.length !== 6}>
+                        {loading ? "Verifying account…" : "Verify account"}<i className="bi bi-shield-check" />
+                    </button>
+                    <button className="reset-text-button" type="button" disabled={loading} onClick={requestCode}>Send a new code</button>
+                </form>}
+
+                {!complete && emailVerified && <form onSubmit={resetPassword}>
                     <label htmlFor="new-password">New password</label>
                     <div className="reset-input-wrap"><i className="bi bi-lock" /><input id="new-password" type="password" autoComplete="new-password" minLength={8} value={password} onChange={event => setPassword(event.target.value)} placeholder="At least 8 characters" required /></div>
                     <label htmlFor="confirm-password">Retype new password</label>
                     <div className="reset-input-wrap"><i className="bi bi-lock-fill" /><input id="confirm-password" type="password" autoComplete="new-password" minLength={8} value={confirmPassword} onChange={event => setConfirmPassword(event.target.value)} placeholder="Enter the same password again" required /></div>
-                    <button className="reset-submit" type="submit" disabled={loading || code.length !== 6}>
+                    <button className="reset-submit" type="submit" disabled={loading || !resetToken}>
                         {loading ? "Updating password…" : "Update password"}<i className="bi bi-arrow-right" />
                     </button>
-                    <button className="reset-text-button" type="button" disabled={loading} onClick={requestCode}>Send a new code</button>
                 </form>}
 
                 {complete && <Link className="reset-submit reset-signin" to="/login">Back to sign in<i className="bi bi-arrow-right" /></Link>}
