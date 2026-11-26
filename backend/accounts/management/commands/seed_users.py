@@ -1,69 +1,38 @@
-from django.core.management.base import BaseCommand
+import os
+
 from django.contrib.auth.models import User
+from django.core.management.base import BaseCommand, CommandError
+
 from accounts.models import UserProfile
 
 
 class Command(BaseCommand):
-    help = "Create default CivicFix demo users"
+    help = "Create or update the CivicFix administrator account"
 
     def handle(self, *args, **options):
-
-        users = [
-            {
-                "username": "admin",
-                "password": "Admin@123",
-                "role": "admin",
-            },
-            {
-                "username": "officer1",
-                "password": "Officer@123",
-                "role": "officer",
-            },
-            {
-                "username": "citizen1",
-                "password": "Citizen@123",
-                "role": "citizen",
-            },
-        ]
-
-        for data in users:
-
-            user, created = User.objects.get_or_create(
-                username=data["username"]
+        password = os.getenv("CIVICFIX_ADMIN_PASSWORD")
+        if not password:
+            raise CommandError(
+                "Set CIVICFIX_ADMIN_PASSWORD in the environment before creating the admin account."
             )
 
-            user.set_password(data["password"])
-            user.is_active = True
+        username = os.getenv("CIVICFIX_ADMIN_USERNAME", "admin").strip() or "admin"
+        email = os.getenv("CIVICFIX_ADMIN_EMAIL", "").strip()
 
-            if data["role"] == "admin":
-                user.is_staff = True
-                user.is_superuser = True
-            else:
-                user.is_staff = False
-                user.is_superuser = False
+        user, created = User.objects.get_or_create(username=username)
+        user.set_password(password)
+        user.email = email
+        user.is_active = True
+        user.is_staff = True
+        user.is_superuser = True
+        user.save()
 
-            user.save()
+        UserProfile.objects.update_or_create(
+            user=user,
+            defaults={"role": "admin"},
+        )
 
-            UserProfile.objects.update_or_create(
-                user=user,
-                defaults={
-                    "role": data["role"],
-                }
-            )
-
-            if created:
-                self.stdout.write(
-                    self.style.SUCCESS(
-                        f"Created user: {data['username']} ({data['role']})"
-                    )
-                )
-            else:
-                self.stdout.write(
-                    self.style.WARNING(
-                        f"Updated user: {data['username']} ({data['role']})"
-                    )
-                )
-
+        action = "Created" if created else "Updated"
         self.stdout.write(
-            self.style.SUCCESS("CivicFix demo users are ready.")
+            self.style.SUCCESS(f"{action} CivicFix administrator account: {username}")
         )

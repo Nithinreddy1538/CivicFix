@@ -4,8 +4,18 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from .serializers import RegisterSerializer
 from .models import UserProfile
+
+
+def has_admin_access(user):
+    profile = getattr(user, 'profile', None)
+    return bool(
+        user.is_authenticated
+        and (user.is_superuser or (user.is_staff and profile and profile.role == 'admin'))
+    )
 
 
 class RegisterView(APIView):
@@ -38,7 +48,12 @@ class LoginView(APIView):
 
     def post(self, request):
 
-        username = request.data.get('username')
+        username = (
+            request.data.get('username')
+            or request.data.get('email')
+            or request.data.get('identifier')
+            or ''
+        ).strip()
         password = request.data.get('password')
 
         from django.contrib.auth import authenticate
@@ -50,6 +65,15 @@ class LoginView(APIView):
 
         if user is None and username:
             user_obj = User.objects.filter(username__iexact=username).first()
+            if user_obj:
+                user = authenticate(
+                    username=user_obj.username,
+                    password=password
+                )
+
+        # Field agents use the email address assigned by an administrator.
+        if user is None and username and '@' in username:
+            user_obj = User.objects.filter(email__iexact=username).first()
             if user_obj:
                 user = authenticate(
                     username=user_obj.username,
@@ -92,7 +116,7 @@ class StaffUserListView(APIView):
 
     def get(self, request):
 
-        if not request.user.is_staff:
+        if not has_admin_access(request.user):
             return Response(
                 {'message': 'Admin access required'},
                 status=status.HTTP_403_FORBIDDEN
@@ -127,7 +151,7 @@ class StaffUserListView(APIView):
 
     def post(self, request):
 
-        if not request.user.is_staff:
+        if not has_admin_access(request.user):
             return Response(
                 {'message': 'Admin access required to recruit officers.'},
                 status=status.HTTP_403_FORBIDDEN
@@ -141,15 +165,29 @@ class StaffUserListView(APIView):
         phone = request.data.get('phone', '').strip()
         department = request.data.get('department', '').strip()
 
-        if not username or not password:
+        if not username or not password or not email:
             return Response(
-                {'message': 'Username and password are required.'},
+                {'message': 'Username, email address, and password are required for an agent account.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response(
+                {'message': 'Enter a valid email address for the agent.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         if User.objects.filter(username__iexact=username).exists():
             return Response(
                 {'message': f'Username "{username}" is already taken. Please choose another.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if User.objects.filter(email__iexact=email).exists():
+            return Response(
+                {'message': f'Email address "{email}" is already assigned to another account.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -171,7 +209,7 @@ class StaffUserListView(APIView):
 
         return Response(
             {
-                'message': f'Officer {username} recruited successfully!',
+                'message': f'Agent {username} created successfully. They can sign in with {email}.',
                 'officer': {
                     'id': user.id,
                     'username': user.username,

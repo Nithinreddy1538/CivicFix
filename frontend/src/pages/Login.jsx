@@ -7,21 +7,21 @@ const loginRoles = [
     {
         id: "citizen",
         title: "Citizen",
-        detail: "Report issues and follow their progress",
+        detail: "Sign in with your username or registered email",
         icon: "bi-people",
         badge: "Community portal",
     },
     {
         id: "officer",
         title: "Agent / Officer",
-        detail: "Manage assigned cases and field updates",
+        detail: "Use the email address and password assigned by your admin",
         icon: "bi-person-badge",
         badge: "Field operations",
     },
     {
         id: "admin",
         title: "Administrator",
-        detail: "Oversee reports, teams, and city insights",
+        detail: "Sign in with the Admin username and password",
         icon: "bi-building-gear",
         badge: "Management portal",
     },
@@ -30,7 +30,7 @@ const loginRoles = [
 function Login() {
     const navigate = useNavigate();
     const [selectedRole, setSelectedRole] = useState("citizen");
-    const [username, setUsername] = useState("");
+    const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ function Login() {
         setLoading(true);
 
         try {
-            const response = await API.post("/accounts/login/", { username, password });
+            const response = await API.post("/accounts/login/", { username: identifier, password });
             const actualRole = response.data.role;
 
             if (actualRole !== selectedRole) {
@@ -118,10 +118,20 @@ function Login() {
                     {error && <div className="login-error" role="alert"><i className="bi bi-exclamation-circle-fill" /><span>{error}</span></div>}
 
                     <form className="login-form" onSubmit={handleSubmit}>
-                        <label className="login-field-label" htmlFor="login-username">Username</label>
+                        <label className="login-field-label" htmlFor="login-username">
+                            {selectedRole === "officer" ? "Agent email address" : selectedRole === "admin" ? "Admin username" : "Username or email"}
+                        </label>
                         <div className="login-input-wrap">
-                            <i className="bi bi-person" aria-hidden="true" />
-                            <input id="login-username" type="text" autoComplete="username" placeholder="Enter your username" value={username} onChange={(event) => setUsername(event.target.value)} required />
+                            <i className={`bi ${selectedRole === "officer" || (selectedRole === "citizen" && identifier.includes("@")) ? "bi-envelope" : "bi-person"}`} aria-hidden="true" />
+                            <input
+                                id="login-username"
+                                type={selectedRole === "officer" ? "email" : "text"}
+                                autoComplete="username"
+                                placeholder={selectedRole === "officer" ? "name@municipality.gov" : selectedRole === "admin" ? "Admin" : "Username or email address"}
+                                value={identifier}
+                                onChange={(event) => setIdentifier(event.target.value)}
+                                required
+                            />
                         </div>
 
                         <div className="login-password-heading">

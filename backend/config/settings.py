@@ -162,26 +162,39 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+LOCAL_FRONTEND_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
+DEPLOYED_FRONTEND_ORIGINS = [
+    'https://civicfix-frontend-hatx.onrender.com',
+]
+
+
+def get_allowed_origins(environment_variable, defaults):
+    configured_origins = [
+        origin.strip().rstrip('/')
+        for origin in os.getenv(environment_variable, '').split(',')
+        if origin.strip()
+    ]
+    return list(dict.fromkeys([*defaults, *configured_origins]))
+
+
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
     CORS_ALLOW_ALL_ORIGINS = False
-    CORS_ALLOWED_ORIGINS = [
-        origin.strip()
-        for origin in os.getenv(
-            'CORS_ALLOWED_ORIGINS',
-            'http://localhost:5173,http://127.0.0.1:5173'
-        ).split(',')
-        if origin.strip()
-    ]
+    CORS_ALLOWED_ORIGINS = get_allowed_origins(
+        'CORS_ALLOWED_ORIGINS',
+        [*LOCAL_FRONTEND_ORIGINS, *DEPLOYED_FRONTEND_ORIGINS],
+    )
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
-    if origin.strip()
-]
+CSRF_TRUSTED_ORIGINS = get_allowed_origins(
+    'CSRF_TRUSTED_ORIGINS',
+    [*LOCAL_FRONTEND_ORIGINS, *DEPLOYED_FRONTEND_ORIGINS],
+)
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

@@ -14,6 +14,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         write_only=True,
         required=False
     )
+    email = serializers.EmailField(required=True)
 
     class Meta:
         model = User
@@ -25,6 +26,12 @@ class RegisterSerializer(serializers.ModelSerializer):
             'last_name',
             'phone'
         ]
+
+    def validate_email(self, value):
+        normalized_email = value.strip().lower()
+        if User.objects.filter(email__iexact=normalized_email).exists():
+            raise serializers.ValidationError('An account with this email address already exists.')
+        return normalized_email
 
     def create(self, validated_data):
 

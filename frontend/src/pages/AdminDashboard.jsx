@@ -341,14 +341,14 @@ function AdminDashboard() {
                             <div className="d-inline-flex align-items-center gap-2 mb-1">
                                 <h4 className="fw-bold mb-0">
                                     <i className="bi bi-people-fill text-success me-2"></i>
-                                    Municipal Officer Force
+                                    Municipal Agent & Officer Team
                                 </h4>
                                 <span className="badge bg-success rounded-pill px-3 py-1">
-                                    {officers.length} Active Officers
+                                    {officers.length} Active Agents
                                 </span>
                             </div>
                             <p className="text-muted small mb-0">
-                                Recruit, commission, and authorize municipal department officers to handle field complaints.
+                                Create agent accounts and assign their department, email address, and sign-in password.
                             </p>
                         </div>
 
@@ -358,19 +358,19 @@ function AdminDashboard() {
                             onClick={() => setShowRecruitForm(!showRecruitForm)}
                         >
                             <i className={`bi ${showRecruitForm ? "bi-x-lg" : "bi-person-plus-fill"} me-1`}></i>
-                            {showRecruitForm ? "Cancel" : "Recruit New Officer"}
+                            {showRecruitForm ? "Cancel" : "Add New Agent"}
                         </button>
                     </div>
 
-                    {/* Officer Recruitment Form */}
+                    {/* Agent account form */}
                     {showRecruitForm && (
                         <div className="card stat-card stat-card-success mb-4 p-4 border shadow-sm">
                             <h5 className="fw-bold text-dark mb-1">
                                 <i className="bi bi-award-fill text-success me-2"></i>
-                                Commission New Municipal Field Officer
+                                Create Municipal Agent Account
                             </h5>
                             <p className="small text-muted mb-3">
-                                This will generate official staff login credentials for CivicFix.
+                                The agent will sign in with the email address and password you set here.
                             </p>
 
                             {recruitError && (
@@ -466,7 +466,7 @@ function AdminDashboard() {
                                     </div>
 
                                     <div className="col-md-3">
-                                        <label className="form-label small fw-semibold text-muted">Email</label>
+                                        <label className="form-label small fw-semibold text-muted">Agent Email Address *</label>
                                         <input
                                             type="email"
                                             name="email"
@@ -474,6 +474,7 @@ function AdminDashboard() {
                                             placeholder="officer@civicfix.gov.in"
                                             value={recruitForm.email}
                                             onChange={handleRecruitChange}
+                                            required
                                         />
                                     </div>
 
@@ -506,12 +507,12 @@ function AdminDashboard() {
                                         {recruitSubmitting ? (
                                             <>
                                                 <span className="spinner-border spinner-border-sm me-1"></span>
-                                                Authorizing Officer...
+                                                Creating Agent...
                                             </>
                                         ) : (
                                             <>
                                                 <i className="bi bi-check-circle-fill me-1"></i>
-                                                Authorize & Recruit Officer
+                                                Create Agent Account
                                             </>
                                         )}
                                     </button>
@@ -529,7 +530,7 @@ function AdminDashboard() {
                     ) : officers.length === 0 ? (
                         <div className="alert alert-info mb-0 text-center py-4">
                             <i className="bi bi-people display-6 d-block mb-2"></i>
-                            No field officers recruited yet. Click <strong>"Recruit New Officer"</strong> above to commission staff.
+                            No field agents have been added yet. Click <strong>"Add New Agent"</strong> above to create an agent login.
                         </div>
                     ) : (
                         <div className="table-responsive">

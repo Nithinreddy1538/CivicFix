@@ -507,7 +507,18 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-### Create Demo Users
+### Create the Admin Account
+
+Set `CIVICFIX_ADMIN_PASSWORD` in your environment before running the seed command. Keep the value out of source control.
+
+PowerShell local setup:
+
+```powershell
+$env:CIVICFIX_ADMIN_PASSWORD = "<your-admin-password>"
+python manage.py seed_users
+```
+
+For Render, add `CIVICFIX_ADMIN_PASSWORD` to the backend service environment, deploy, then run `python manage.py seed_users` once in the service Shell.
 
 ```bash
 python manage.py seed_users
@@ -555,23 +566,17 @@ http://localhost:5173/
 
 ---
 
-# 🔑 Demo Accounts
+# 🔑 Account Access
 
-For demonstration purposes:
-
-| Role        | Username   | Password      |
-| ----------- | ---------- | ------------- |
-| 👨‍💼 Admin | `admin`    | `Admin@123`   |
-| 👷 Officer  | `officer1` | `Officer@123` |
-| 👤 Citizen  | `citizen1` | `Citizen@123` |
-
-> ⚠️ These credentials are intended for the hackathon/demo environment. Production deployments should use secure, environment-managed credentials.
+The administrator account is created with `python manage.py seed_users` after setting the private `CIVICFIX_ADMIN_PASSWORD` environment variable. Administrators create agent accounts from the dashboard with an email and password. Citizens create their own accounts from the registration page.
 
 ---
 
 # 🌐 Production Deployment
 
 CivicFix is deployed using **Render**.
+
+The backend allows the deployed frontend and the local Vite origins (`http://localhost:5173` and `http://127.0.0.1:5173`) by default. Additional origins in `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS` are kept alongside those defaults.
 
 ```text
                    GitHub
