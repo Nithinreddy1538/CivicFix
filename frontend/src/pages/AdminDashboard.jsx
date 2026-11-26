@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import API from "../api";
 import ComplaintMap from "../components/ComplaintMap";
 import ComplaintHeatmap from "../components/ComplaintHeatmap";
@@ -8,6 +8,8 @@ import AdminCommandCenter from "../components/AdminCommandCenter";
 import AdminUserManagement from "../components/AdminUserManagement";
 
 function AdminDashboard() {
+
+    const location = useLocation();
 
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -45,6 +47,17 @@ function AdminDashboard() {
             loadOfficers();
         }
     }, [isAdmin]);
+
+    useEffect(() => {
+        const sectionId = location.hash.slice(1);
+        if (!sectionId) return;
+
+        const frameId = window.requestAnimationFrame(() => {
+            document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        return () => window.cancelAnimationFrame(frameId);
+    }, [location.hash]);
 
     const loadComplaints = async () => {
         try {
@@ -206,7 +219,7 @@ function AdminDashboard() {
     ).length;
 
     return (
-        <div className="container py-5 page-enter">
+        <div id="admin-overview" className="container py-5 page-enter" style={{ scrollMarginTop: "88px" }}>
 
             <div className="d-flex justify-content-between align-items-center mb-4">
 
@@ -312,7 +325,7 @@ function AdminDashboard() {
 
             </div>
 
-            <div className="mb-5">
+            <div id="admin-operations" className="mb-5" style={{ scrollMarginTop: "88px" }}>
 
                 <h3 className="fw-bold mb-3">
                     Command Center
@@ -322,7 +335,7 @@ function AdminDashboard() {
 
             </div>
 
-            <div className="mb-5">
+            <div id="admin-analytics" className="mb-5" style={{ scrollMarginTop: "88px" }}>
 
                 <h3 className="fw-bold mb-3">
                     Analytics & Statistics
@@ -335,7 +348,7 @@ function AdminDashboard() {
             </div>
 
             {/* Officer Force & Recruitment Section */}
-            <div className="card shadow-sm border-0 mb-5" style={{ borderRadius: "18px" }}>
+            <div id="admin-agents" className="card shadow-sm border-0 mb-5" style={{ borderRadius: "18px", scrollMarginTop: "88px" }}>
                 <div className="card-body p-4">
                     <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
                         <div>
@@ -599,7 +612,7 @@ function AdminDashboard() {
 
             <AdminUserManagement />
 
-            <div className="card shadow-sm mb-4">
+            <div id="admin-complaints" className="card shadow-sm mb-4" style={{ scrollMarginTop: "88px" }}>
 
                 <div className="card-body">
 

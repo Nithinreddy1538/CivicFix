@@ -47,7 +47,7 @@ function AdminUserManagement() {
     };
 
     return (
-        <section className="card shadow-sm border-0 mb-5" aria-labelledby="admin-accounts-heading">
+        <section id="admin-accounts" className="card shadow-sm border-0 mb-5" aria-labelledby="admin-accounts-heading" style={{ scrollMarginTop: "88px" }}>
             <div className="card-body p-4">
                 <div className="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
                     <div>

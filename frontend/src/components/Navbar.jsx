@@ -18,6 +18,13 @@ function Navbar() {
     };
 
     const isActive = (path) => location.pathname === path ? "active" : "";
+    const adminSections = [
+        { id: "admin-overview", label: "Overview", icon: "bi-speedometer2" },
+        { id: "admin-complaints", label: "Complaints", icon: "bi-clipboard-check" },
+        { id: "admin-analytics", label: "Analytics", icon: "bi-graph-up-arrow" },
+        { id: "admin-agents", label: "Agents & Officers", icon: "bi-person-badge" },
+        { id: "admin-accounts", label: "Citizen Accounts", icon: "bi-people" },
+    ];
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
@@ -64,13 +71,46 @@ function Navbar() {
                                 )}
 
                                 {role === "admin" && (
-                                    <Link
-                                        className={`nav-link ${isActive("/admin")}`}
-                                        to="/admin"
-                                    >
-                                        <i className="bi bi-shield-lock me-1"></i>
-                                        Admin Console
-                                    </Link>
+                                    <>
+                                        <Link
+                                            className={`nav-link ${isActive("/admin")}`}
+                                            to="/admin"
+                                        >
+                                            <i className="bi bi-shield-lock me-1"></i>
+                                            Admin Console
+                                        </Link>
+                                        <div className="nav-item dropdown">
+                                            <button
+                                                className="nav-link dropdown-toggle border-0 bg-transparent"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                            >
+                                                <i className="bi bi-sliders me-1"></i>
+                                                Manage
+                                            </button>
+                                            <ul className="dropdown-menu dropdown-menu-end">
+                                                {adminSections.map((section) => (
+                                                    <li key={section.id}>
+                                                        <Link
+                                                            className="dropdown-item"
+                                                            to={`/admin#${section.id}`}
+                                                            onClick={() => {
+                                                                if (location.pathname === "/admin") {
+                                                                    window.setTimeout(() => {
+                                                                        document.getElementById(section.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                                                                    }, 0);
+                                                                }
+                                                            }}
+                                                        >
+                                                            <i className={`bi ${section.icon} me-2`}></i>
+                                                            {section.label}
+                                                        </Link>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </>
                                 )}
 
                                 {role === "officer" && (
