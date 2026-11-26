@@ -26,7 +26,7 @@ function HeatLayer({ complaints }) {
             maxZoom: 17,
             gradient: {
                 0.2: "#0dcaf0",
-                0.4: "#d9873d",
+                0.4: "#e5aa70",
                 0.6: "#ffc107",
                 0.8: "#fd7e14",
                 1.0: "#dc3545"

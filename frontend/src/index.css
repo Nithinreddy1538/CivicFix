@@ -1,23 +1,23 @@
 /* ==========================================================================
    CivicFix Design System & Advanced Animated Styles
-   Theme: Warm Civic Orange, Soft Yellow & Clean Modern Glassmorphism
+   Theme: Light Civic Apricot, Sky Blue & Clean Modern Glassmorphism
    ========================================================================== */
 
 :root {
-    --civic-primary: #d9873d;
+    --civic-primary: #b97842;
     --civic-primary-dark: #77451f;
-    --civic-primary-light: #f2c95c;
-    --civic-emerald: #efa94d;
-    --civic-mint: #fff4df;
-    --civic-bg: #fffbf3;
-    --bs-success: #d9873d;
-    --bs-success-rgb: 217, 135, 61;
+    --civic-primary-light: #bcd5ee;
+    --civic-emerald: #bcd5ee;
+    --civic-mint: #fff1e2;
+    --civic-bg: #f7faff;
+    --bs-success: #b97842;
+    --bs-success-rgb: 185, 120, 66;
     --bs-success-text-emphasis: #77451f;
-    --bs-success-bg-subtle: #fff4df;
+    --bs-success-bg-subtle: #fff1e2;
     --bs-success-border-subtle: #f0d4aa;
     --civic-card-bg: rgba(255, 255, 255, 0.96);
-    --civic-border: rgba(217, 135, 61, 0.12);
-    --civic-border-hover: rgba(217, 135, 61, 0.32);
+    --civic-border: rgba(185, 120, 66, 0.12);
+    --civic-border-hover: rgba(185, 120, 66, 0.32);
     --civic-shadow-sm: 0 2px 6px rgba(119, 69, 31, 0.04), 0 1px 3px rgba(0, 0, 0, 0.04);
     --civic-shadow-md: 0 10px 20px -3px rgba(119, 69, 31, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
     --civic-shadow-lg: 0 20px 28px -5px rgba(217, 135, 61, 0.14), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -271,9 +271,27 @@ img {
 .navbar {
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    background: linear-gradient(110deg, rgba(199, 112, 51, 0.98), rgba(217, 135, 61, 0.98) 58%, rgba(225, 168, 70, 0.98)) !important;
+    background: linear-gradient(105deg, #ffe5cb 0%, #f5ebdf 48%, #dceafa 100%) !important;
     transition: all 0.3s ease;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(107, 139, 174, 0.24);
+}
+
+.civicfix-navbar .navbar-brand,
+.civicfix-navbar .navbar-nav > .nav-link,
+.civicfix-navbar .nav-link.dropdown-toggle,
+.civicfix-navbar .navbar-toggler {
+    color: #40556c !important;
+}
+
+.civicfix-navbar .navbar-nav > .nav-link:hover,
+.civicfix-navbar .navbar-nav > .nav-link.active,
+.civicfix-navbar .nav-link.dropdown-toggle:hover {
+    color: #243d57 !important;
+}
+
+.civicfix-navbar .btn-outline-light {
+    border-color: rgba(64, 85, 108, 0.48);
+    color: #40556c;
 }
 
 .civicfix-navbar {
@@ -306,8 +324,8 @@ img {
         overflow-x: hidden;
         overflow-y: auto;
         padding: 86px 20px 28px;
-        background: linear-gradient(160deg, #d9873d 0%, #e3aa4c 100%);
-        box-shadow: 18px 0 45px rgba(91, 55, 28, 0.24);
+        background: linear-gradient(155deg, #ffe2c2 0%, #f5eee5 48%, #dceafa 100%);
+        box-shadow: 18px 0 45px rgba(63, 83, 106, 0.18);
         transform: translateX(-105%);
         visibility: hidden;
         transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1), visibility 280ms;
@@ -327,8 +345,8 @@ img {
         align-items: center;
         justify-content: space-between;
         padding: 0 0 12px;
-        color: #785334;
-        border-bottom: 1px solid rgba(119, 69, 31, 0.18);
+        color: #506781;
+        border-bottom: 1px solid rgba(86, 119, 154, 0.2);
     }
 
     .civicfix-nav-drawer .navbar-nav {
@@ -345,13 +363,13 @@ img {
         min-height: 48px;
         padding: 12px 14px !important;
         border-radius: 12px;
-        color: rgba(78, 53, 31, 0.9);
+        color: rgba(53, 73, 95, 0.94);
         font-size: 16px;
     }
 
     .civicfix-navbar .civicfix-nav-drawer .navbar-nav .nav-link:hover,
     .civicfix-navbar .civicfix-nav-drawer .navbar-nav .nav-link.active {
-        color: #4e351f;
+        color: #293f57;
         background: rgba(255, 255, 255, 0.4);
     }
 
@@ -365,18 +383,18 @@ img {
         margin: 4px 0 8px !important;
         padding: 8px;
         background: rgba(255, 255, 255, 0.35);
-        border: 1px solid rgba(119, 69, 31, 0.12);
+        border: 1px solid rgba(86, 119, 154, 0.18);
         box-shadow: none;
     }
 
     .civicfix-nav-drawer .dropdown-item {
         padding: 10px 12px;
-        color: rgba(78, 53, 31, 0.9);
+        color: rgba(53, 73, 95, 0.94);
         border-radius: 8px;
     }
 
     .civicfix-nav-drawer .dropdown-item:hover {
-        color: #4e351f;
+        color: #293f57;
         background: rgba(255, 255, 255, 0.48);
     }
 
@@ -385,7 +403,7 @@ img {
         flex-wrap: wrap;
         margin: 14px 0 0 !important;
         padding: 16px 10px 0;
-        border-top: 1px solid rgba(119, 69, 31, 0.18);
+        border-top: 1px solid rgba(86, 119, 154, 0.2);
     }
 
     .civicfix-nav-drawer .d-flex.align-items-center.ms-lg-2 .btn {
@@ -393,8 +411,8 @@ img {
     }
 
     .civicfix-nav-drawer .btn-outline-light {
-        border-color: rgba(91, 55, 28, 0.38);
-        color: #573b29;
+        border-color: rgba(64, 85, 108, 0.42);
+        color: #40556c;
     }
 
     .civicfix-nav-backdrop {
@@ -475,7 +493,7 @@ img {
    -------------------------------------------------------------------------- */
 .hero-section {
     padding: 100px 20px;
-    background: linear-gradient(135deg, #fff4df 0%, #fff8e9 45%, #ffefcf 100%);
+    background: linear-gradient(125deg, #fff1e2 0%, #fbf7f0 48%, #e8f1fb 100%);
     position: relative;
     border-bottom: 1px solid rgba(217, 135, 61, 0.1);
 }
@@ -501,7 +519,7 @@ img {
 .hero-orb-2 {
     width: 380px;
     height: 380px;
-    background: rgba(45, 212, 191, 0.25);
+    background: rgba(169, 198, 229, 0.32);
     bottom: -60px;
     right: -50px;
     animation: floatOrb 10s ease-in-out infinite reverse;
@@ -528,7 +546,7 @@ img {
 .hero-title {
     font-size: 54px;
     letter-spacing: -1.5px;
-    background: linear-gradient(135deg, #77451f 0%, #d9873d 50%, #efa94d 100%);
+    background: linear-gradient(135deg, #77451f 0%, #e5aa70 50%, #bcd5ee 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: fadeInUp 0.7s var(--civic-ease);
@@ -601,16 +619,18 @@ img {
 
 .btn-success,
 .btn-animated.btn-success {
-    background: linear-gradient(135deg, #d9873d 0%, #efa94d 100%);
+    color: #3d4d5e !important;
+    background: linear-gradient(120deg, #f5c894 0%, #f2e8dc 50%, #c7dcf1 100%);
     border: none;
-    box-shadow: 0 4px 12px rgba(217, 135, 61, 0.25);
+    box-shadow: 0 4px 12px rgba(123, 151, 182, 0.2);
 }
 
 .btn-success:hover,
 .btn-animated.btn-success:hover {
-    background: linear-gradient(135deg, #b96b2c 0%, #d77e34 100%);
+    background: linear-gradient(120deg, #edb675 0%, #e7eff8 50%, #afcce9 100%);
+    color: #293f57 !important;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(217, 135, 61, 0.35);
+    box-shadow: 0 8px 20px rgba(123, 151, 182, 0.26);
 }
 
 .btn-success:active,
@@ -721,7 +741,7 @@ img {
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #d9873d, #efa94d);
+    background: linear-gradient(135deg, #e5aa70, #bcd5ee);
     color: white;
     font-size: 20px;
     display: flex;
@@ -757,7 +777,7 @@ img {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #d9873d, #efa94d);
+    background: linear-gradient(90deg, #e5aa70, #bcd5ee);
     transition: height 0.25s ease;
 }
 
@@ -788,7 +808,7 @@ img {
 }
 
 .stat-card-success::before {
-    background: linear-gradient(90deg, #d9873d, #efa94d);
+    background: linear-gradient(90deg, #e5aa70, #bcd5ee);
 }
 
 .stat-icon-wrapper {
@@ -822,7 +842,8 @@ img {
 }
 
 .badge.bg-success {
-    background: linear-gradient(135deg, #d9873d, #efa94d) !important;
+    color: #5d4935 !important;
+    background: linear-gradient(120deg, #f4d4af, #e7eff8 55%, #c7dcf1) !important;
 }
 
 .badge.bg-warning {
@@ -880,7 +901,7 @@ img {
 }
 
 .tracking-step.completed:not(:last-child)::after {
-    background: linear-gradient(180deg, #d9873d, #efa94d, #f2c95c, #d9873d);
+    background: linear-gradient(180deg, #e5aa70, #bcd5ee, #f2c95c, #e5aa70);
     background-size: 100% 200%;
     animation: flowGradientLine 3s linear infinite;
     box-shadow: 0 0 6px rgba(239, 169, 77, 0.45);
@@ -902,7 +923,7 @@ img {
 }
 
 .tracking-step.completed .tracking-icon {
-    background: linear-gradient(135deg, #d9873d, #efa94d);
+    background: linear-gradient(135deg, #e5aa70, #bcd5ee);
     color: white;
     box-shadow: 0 4px 10px rgba(217, 135, 61, 0.3);
 }
@@ -910,7 +931,7 @@ img {
 /* Active Step Radar Wave Animation */
 .tracking-step.active-step .tracking-icon {
     animation: radarPulse 2s infinite cubic-bezier(0.45, 0, 0.55, 1);
-    background: #d9873d;
+    background: #e5aa70;
     color: white;
 }
 
@@ -949,7 +970,7 @@ img {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #d9873d, #efa94d);
+    background: linear-gradient(135deg, #e5aa70, #bcd5ee);
     color: white;
     display: flex;
     align-items: center;
@@ -1038,8 +1059,8 @@ img {
     left: 12px;
     right: 12px;
     height: 3px;
-    background: linear-gradient(90deg, transparent, #efa94d 30%, #f4c45e 50%, #efa94d 70%, transparent);
-    box-shadow: 0 0 10px #efa94d, 0 0 18px #f4c45e;
+    background: linear-gradient(90deg, transparent, #bcd5ee 30%, #f4c45e 50%, #bcd5ee 70%, transparent);
+    box-shadow: 0 0 10px #bcd5ee, 0 0 18px #f4c45e;
     border-radius: 2px;
     z-index: 10;
     pointer-events: none;
@@ -1050,7 +1071,7 @@ img {
     position: absolute;
     width: 14px;
     height: 14px;
-    border-color: #efa94d;
+    border-color: #bcd5ee;
     border-style: solid;
     pointer-events: none;
 }
@@ -1073,7 +1094,7 @@ img {
 }
 
 .chat-bubble-user {
-    background: linear-gradient(135deg, #d9873d 0%, #efa94d 100%);
+    background: linear-gradient(135deg, #e5aa70 0%, #bcd5ee 100%);
     color: #ffffff;
     border-radius: 16px 16px 4px 16px;
     padding: 12px 18px;
@@ -1094,7 +1115,7 @@ img {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #efa94d;
+    background: #bcd5ee;
     display: inline-block;
     animation: typingDot 1.4s infinite;
 }
@@ -1203,7 +1224,7 @@ img {
 }
 
 .auth-header {
-    background: linear-gradient(135deg, #d9873d 0%, #efa94d 100%);
+    background: linear-gradient(135deg, #e5aa70 0%, #bcd5ee 100%);
     color: white;
     padding: 28px 24px;
     text-align: center;
@@ -1346,7 +1367,7 @@ img {
     left: 0;
     bottom: 0;
     width: 4px;
-    background: linear-gradient(to bottom, #d9873d, #efa94d);
+    background: linear-gradient(to bottom, #e5aa70, #bcd5ee);
 }
 
 .pulse-radar-dot {
