@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../api";
 
 function Notifications() {
+    const navigate = useNavigate();
+    const role = localStorage.getItem("role") || "citizen";
 
     const [notifications, setNotifications] = useState([]);
+    const [complaintPaths, setComplaintPaths] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -16,11 +20,22 @@ function Notifications() {
         try {
             setError("");
 
-            const response = await API.get(
-                "/notifications/"
-            );
+            const [notificationResult, complaintResult] = await Promise.all([
+                API.get("/notifications/"),
+                API.get("/complaints/").catch(() => ({ data: [] }))
+            ]);
+            setNotifications(notificationResult.data);
 
-            setNotifications(response.data);
+            const detailBase = role === "admin"
+                ? "/admin/complaints/"
+                : role === "officer"
+                    ? "/officer/complaints/"
+                    : "/complaints/";
+            const paths = {};
+            complaintResult.data.forEach(complaint => {
+                paths[complaint.complaint_id.toUpperCase()] = `${detailBase}${complaint.id}`;
+            });
+            setComplaintPaths(paths);
 
         } catch (error) {
             setError(error.response?.data?.detail || "Notifications could not be loaded. Check your connection and try again.");
@@ -83,6 +98,11 @@ function Notifications() {
             console.log(error);
 
         }
+    };
+
+    const openComplaint = async (notification, path) => {
+        if (!notification.is_read) await markAsRead(notification.id);
+        navigate(path);
     };
 
     const unreadCount = notifications.filter(
@@ -165,8 +185,10 @@ function Notifications() {
 
                     <div className="col-lg-8 mx-auto">
 
-                        {notifications.map(
-                            (notification, idx) => (
+                        {notifications.map((notification, idx) => {
+                            const complaintId = notification.message.match(/CF-\d{4}-\d{4}/i)?.[0]?.toUpperCase();
+                            const complaintPath = complaintId ? complaintPaths[complaintId] : null;
+                            return (
 
                                 <div
                                     key={notification.id}
@@ -224,11 +246,19 @@ function Notifications() {
 
                                                 </small>
 
-                                                {!notification.is_read && (
+                                                {(complaintPath || !notification.is_read) && (
 
-                                                    <div className="mt-3">
+                                                    <div className="mt-3 d-flex flex-wrap gap-2">
 
-                                                        <button
+                                                        {complaintPath && <button
+                                                            className="btn btn-sm btn-success"
+                                                            onClick={() => openComplaint(notification, complaintPath)}
+                                                        >
+                                                            <i className="bi bi-box-arrow-up-right me-1"></i>
+                                                            Open Complaint
+                                                        </button>}
+
+                                                        {!notification.is_read && <button
                                                             className="btn btn-sm btn-outline-success"
                                                             onClick={() =>
                                                                 markAsRead(
@@ -237,7 +267,7 @@ function Notifications() {
                                                             }
                                                         >
                                                             Mark as Read
-                                                        </button>
+                                                        </button>}
 
                                                     </div>
 
@@ -250,9 +280,8 @@ function Notifications() {
                                     </div>
 
                                 </div>
-
-                            )
-                        )}
+                            );
+                        })}
 
                     </div>
 
