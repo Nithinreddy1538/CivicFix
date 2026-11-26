@@ -199,10 +199,12 @@ function AdminCommandCenter() {
                         <div className="card-body">
 
                             <h5 className="fw-bold mb-3">
-                                Officer Workload
+                                Agent Workload
                             </h5>
 
-                            {data.officers.map(
+                            {data.officers.length === 0 ? (
+                                <p className="text-muted small mb-0">No active agents have been added yet.</p>
+                            ) : data.officers.map(
                                 officer => (
 
                                     <div
@@ -213,17 +215,17 @@ function AdminCommandCenter() {
                                         <div className="d-flex justify-content-between">
 
                                             <strong>
-                                                {officer.username}
+                                                {officer.name || officer.email || officer.username}
                                             </strong>
 
                                             <span className="badge bg-primary">
-                                                {officer.assigned}
+                                                {officer.active ?? officer.assigned} active
                                             </span>
 
                                         </div>
 
                                         <small className="text-muted">
-                                            {officer.resolved} resolved
+                                            {officer.department || "General"} · {officer.resolved > 0 ? `${officer.resolved} resolved` : "No resolved complaints yet"}
                                         </small>
 
                                     </div>

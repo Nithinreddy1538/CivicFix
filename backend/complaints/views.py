@@ -488,26 +488,37 @@ class ComplaintAnalyticsView(APIView):
 
         officer_data = []
 
-        officers = User.objects.filter(
+        officers = User.objects.select_related('profile').filter(
             profile__role='officer',
             is_active=True
         )
 
         for officer in officers:
+            profile = officer.profile
 
             assigned_count = complaints.filter(
                 assigned_to=officer
             ).count()
+
+            active_count = complaints.filter(
+                assigned_to=officer
+            ).exclude(status__in=['resolved', 'rejected']).count()
 
             resolved_count = complaints.filter(
                 assigned_to=officer,
                 status='resolved'
             ).count()
 
+            display_name = f"{officer.first_name} {officer.last_name}".strip()
+
             officer_data.append({
                 'id': officer.id,
                 'username': officer.username,
+                'name': display_name or officer.email or officer.username,
+                'email': officer.email,
+                'department': profile.department or 'General',
                 'assigned': assigned_count,
+                'active': active_count,
                 'resolved': resolved_count
             })
 
