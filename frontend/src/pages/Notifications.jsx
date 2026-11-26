@@ -5,6 +5,7 @@ function Notifications() {
 
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         loadNotifications();
@@ -13,6 +14,7 @@ function Notifications() {
     const loadNotifications = async () => {
 
         try {
+            setError("");
 
             const response = await API.get(
                 "/notifications/"
@@ -21,8 +23,7 @@ function Notifications() {
             setNotifications(response.data);
 
         } catch (error) {
-
-            console.log(error);
+            setError(error.response?.data?.detail || "Notifications could not be loaded. Check your connection and try again.");
 
         } finally {
 
@@ -40,7 +41,7 @@ function Notifications() {
             );
 
             setNotifications(
-                notifications.map(
+                current => current.map(
                     notification =>
                         notification.id === id
                             ? {
@@ -50,6 +51,7 @@ function Notifications() {
                             : notification
                 )
             );
+            window.dispatchEvent(new Event("notifications-updated"));
 
         } catch (error) {
 
@@ -67,13 +69,14 @@ function Notifications() {
             );
 
             setNotifications(
-                notifications.map(
+                current => current.map(
                     notification => ({
                         ...notification,
                         is_read: true
                     })
                 )
             );
+            window.dispatchEvent(new Event("notifications-updated"));
 
         } catch (error) {
 
@@ -113,9 +116,7 @@ function Notifications() {
                         Notifications
                     </h2>
 
-                    <p className="text-muted mb-0">
-                        Stay updated about your complaints and resolution milestones.
-                    </p>
+                    <p className="text-muted mb-0">Updates for your account, assignments, and complaint activity.</p>
 
                 </div>
 
@@ -132,6 +133,11 @@ function Notifications() {
                 )}
 
             </div>
+
+            {error && <div className="alert alert-warning d-flex justify-content-between align-items-center" role="alert">
+                <span>{error}</span>
+                <button className="btn btn-sm btn-outline-dark ms-3" onClick={loadNotifications}>Retry</button>
+            </div>}
 
             {notifications.length === 0 ? (
 

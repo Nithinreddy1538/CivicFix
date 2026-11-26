@@ -23,6 +23,7 @@ from .serializers import (
     ComplaintFeedbackSerializer
 )
 from notifications.models import Notification
+from notifications.utils import notify_admins
 
 
 def generate_complaint_id():
@@ -76,6 +77,16 @@ class ComplaintListCreateView(APIView):
                 status='pending',
                 note='Complaint registered by citizen',
                 changed_by=request.user
+            )
+
+            Notification.objects.create(
+                user=request.user,
+                title='Complaint Received',
+                message=f'Your complaint {complaint.complaint_id} was submitted and is awaiting review.'
+            )
+            notify_admins(
+                'New Citizen Complaint',
+                f'{complaint.complaint_id}: {complaint.title} is awaiting review.'
             )
 
             return Response(
@@ -193,6 +204,12 @@ class ComplaintStatusUpdateView(APIView):
                 title='Complaint Status Updated',
                 message=f'Your complaint {complaint.complaint_id} is now {new_status.replace("_", " ")}.'
             )
+            if complaint.assigned_to:
+                Notification.objects.create(
+                    user=complaint.assigned_to,
+                    title='Complaint Status Updated',
+                    message=f'Complaint {complaint.complaint_id} is now {new_status.replace("_", " ")}.'
+                )
 
         if priority:
             complaint.priority = priority
@@ -272,12 +289,16 @@ class ComplaintAssignmentView(APIView):
             message=f'Your complaint {complaint.complaint_id} has been assigned to the {department} department.'
         )
 
+        notify_admins(
+            'Complaint Assignment Updated',
+            f'{complaint.complaint_id} was assigned to {officer.get_full_name() or officer.email or officer.username}.'
+        )
+
         Notification.objects.create(
             user=officer,
             title='New Complaint Assigned',
             message=f'Complaint {complaint.complaint_id} has been assigned to you.'
         )
-
         serializer = ComplaintSerializer(
             complaint,
             context={'request': request}
@@ -394,6 +415,10 @@ class OfficerComplaintUpdateView(APIView):
             user=complaint.user,
             title='Complaint Status Updated',
             message=f'Your complaint {complaint.complaint_id} is now {new_status.replace("_", " ")}.'
+        )
+        notify_admins(
+            'Officer Updated Complaint',
+            f'{complaint.complaint_id} is now {new_status.replace("_", " ")}.'
         )
 
         serializer = ComplaintSerializer(
@@ -607,6 +632,16 @@ class ComplaintFeedbackView(APIView):
             complaint=complaint,
             rating=int(rating),
             comment=comment
+        )
+        if complaint.assigned_to:
+            Notification.objects.create(
+                user=complaint.assigned_to,
+                title='Citizen Feedback Received',
+                message=f'A citizen left feedback for resolved complaint {complaint.complaint_id} (rating {feedback.rating}/5).'
+            )
+        notify_admins(
+            'Citizen Feedback Received',
+            f'Feedback was submitted for complaint {complaint.complaint_id} (rating {feedback.rating}/5).'
         )
 
         return Response(

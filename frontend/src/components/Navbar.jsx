@@ -1,4 +1,6 @@
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import API from "../api";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -6,6 +8,32 @@ function Navbar() {
     const token = localStorage.getItem("access");
     const role = localStorage.getItem("role");
     const username = localStorage.getItem("username");
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    const refreshUnreadCount = useCallback(async () => {
+        if (!token) {
+            setUnreadCount(0);
+            return;
+        }
+        try {
+            const response = await API.get("/notifications/");
+            setUnreadCount(response.data.filter(item => !item.is_read).length);
+        } catch {
+            // Keep the rest of the navigation usable if the notification service is offline.
+        }
+    }, [token]);
+
+    useEffect(() => {
+        refreshUnreadCount();
+        const interval = window.setInterval(refreshUnreadCount, 60000);
+        window.addEventListener("focus", refreshUnreadCount);
+        window.addEventListener("notifications-updated", refreshUnreadCount);
+        return () => {
+            window.clearInterval(interval);
+            window.removeEventListener("focus", refreshUnreadCount);
+            window.removeEventListener("notifications-updated", refreshUnreadCount);
+        };
+    }, [refreshUnreadCount, location.pathname]);
 
     const logout = () => {
         localStorage.removeItem("access");
@@ -139,9 +167,9 @@ function Navbar() {
                                 <Link className={`nav-link nav-bell-link position-relative ${isActive("/notifications")}`} to="/notifications">
                                     <i className="bi bi-bell me-1"></i>
                                     Notifications
-                                    <span className="position-absolute top-1 start-100 translate-middle p-1 bg-warning border border-light rounded-circle">
-                                        <span className="visually-hidden">Alerts</span>
-                                    </span>
+                                    {unreadCount > 0 && <span className="badge rounded-pill bg-warning text-dark ms-1" aria-label={`${unreadCount} unread notifications`}>
+                                        {unreadCount > 99 ? "99+" : unreadCount}
+                                    </span>}
                                 </Link>
 
                                 <Link className={`nav-link ${isActive("/ai-assistant")}`} to="/ai-assistant">

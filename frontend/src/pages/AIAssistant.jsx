@@ -2,12 +2,18 @@ import { useState } from "react";
 import API from "../api";
 
 function AIAssistant() {
+    const role = localStorage.getItem("role") || "citizen";
+    const promptsByRole = {
+        citizen: ["What is the status of my complaints?", "How do I report a pothole?", "How will I get updates?"],
+        officer: ["Summarize my assigned workload", "Show my in-progress complaints", "How do I resolve a complaint?"],
+        admin: ["Give me the complaint overview", "How many officers and citizens are active?", "How should I assign a new complaint?"]
+    };
 
     const [message, setMessage] = useState("");
     const [chatHistory, setChatHistory] = useState([
         {
             sender: "ai",
-            text: "Hello! I am your CivicFix Municipal AI Assistant. Ask me about your complaint status (e.g. 'Where is CF-2026-4821?'), SLA deadlines, or how to report civic problems."
+            text: `Hello! I’m your CivicFix assistant for your ${role} account. ${role === "admin" ? "I can summarize cases and help manage staff and citizen accounts." : role === "officer" ? "I can summarize your assigned work and help with complaint updates and resolution." : "I can help track your reports, explain status updates, and guide you through submitting an issue."}`
         }
     ]);
     const [loading, setLoading] = useState(false);
@@ -52,12 +58,7 @@ function AIAssistant() {
         }
     };
 
-    const quickQueries = [
-        "What is the status of my complaints?",
-        "What is the SLA resolution deadline?",
-        "Who is handling my complaint?",
-        "How do I report a pothole?"
-    ];
+    const quickQueries = promptsByRole[role] || promptsByRole.citizen;
 
     return (
         <div className="container py-5">
@@ -74,7 +75,7 @@ function AIAssistant() {
                                 CivicFix AI Assistant
                             </h4>
                             <small className="opacity-75">
-                                Real-time civic grievance guidance & status tracking
+                                Guidance and account-scoped civic service support
                             </small>
                         </div>
 
@@ -157,7 +158,7 @@ function AIAssistant() {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Ask about CF-2026-XXXX, SLA status, or departmental routing..."
+                                    placeholder={role === "admin" ? "Ask about complaints, staff, or citizen accounts..." : role === "officer" ? "Ask about your assigned complaints or field work..." : "Ask about your complaint or how to report an issue..."}
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
                                     disabled={loading}
