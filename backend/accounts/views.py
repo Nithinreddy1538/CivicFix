@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.password_validation import validate_password
 from django.conf import settings
 from django.core.mail import send_mail
+from django.core import signing
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -14,7 +15,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.core import signing
 from django.utils import timezone
 from .serializers import RegisterSerializer
 from .models import PasswordResetCode, UserProfile
@@ -147,18 +147,18 @@ class PasswordResetRequestView(APIView):
             return Response(generic_response, status=200)
 
         PasswordResetCode.objects.filter(user=user, used_at__isnull=True).update(used_at=now)
-        code = f'{secrets.randbelow(1_000_000):06d}'
+        recovery_code = secrets.token_urlsafe(32)
         PasswordResetCode.objects.create(
             user=user,
-            code_hash=make_password(code),
+            code_hash=make_password(recovery_code),
             expires_at=now + timedelta(minutes=10),
         )
         try:
             sent = send_mail(
-                subject='Your CivicFix password reset code',
+                subject='Your CivicFix password recovery code',
                 message=(
-                    f'Your CivicFix password reset code is {code}. '
-                    'Enter this code on the password reset page. It expires in 10 minutes. '
+                    f'Your CivicFix password recovery code is:\n\n{recovery_code}\n\n'
+                    'Enter this code on the password reset page. It expires in 10 minutes and can only be used once. '
                     'If you did not request this, you can ignore this email.'
                 ),
                 from_email=settings.DEFAULT_FROM_EMAIL,
@@ -178,14 +178,14 @@ class PasswordResetRequestView(APIView):
         return Response(generic_response, status=200)
 
 
-class PasswordResetVerifyCodeView(APIView):
+class PasswordResetVerifyRecoveryCodeView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
         email = str(request.data.get('email', '')).strip().lower()
-        code = str(request.data.get('code', '')).strip()
-        if not email or not code:
-            return Response({'message': 'Email and reset code are required.'}, status=400)
+        recovery_code = str(request.data.get('recovery_code', '')).strip()
+        if not email or not recovery_code:
+            return Response({'message': 'Email and recovery code are required.'}, status=400)
         try:
             validate_email(email)
         except ValidationError:
@@ -200,25 +200,19 @@ class PasswordResetVerifyCodeView(APIView):
             expires_at__gt=now,
             attempts__lt=5,
         ).select_related('user').first()
-        if not reset_code:
-            return Response({'message': 'The reset code is invalid or expired. Request a new code.'}, status=400)
-
-        if not check_password(code, reset_code.code_hash):
-            reset_code.attempts += 1
-            if reset_code.attempts >= 5:
-                reset_code.used_at = now
-            reset_code.save(update_fields=['attempts', 'used_at'])
-            return Response({'message': 'The reset code is invalid or expired. Check the code or request a new one.'}, status=400)
+        if not reset_code or not check_password(recovery_code, reset_code.code_hash):
+            if reset_code:
+                reset_code.attempts += 1
+                if reset_code.attempts >= 5:
+                    reset_code.used_at = now
+                reset_code.save(update_fields=['attempts', 'used_at'])
+            return Response({'message': 'The recovery code is invalid or expired. Request a new code.'}, status=400)
 
         reset_token = signing.dumps(
-            {
-                'email': email,
-                'user_id': reset_code.user_id,
-                'code_id': reset_code.id,
-            },
+            {'email': email, 'user_id': reset_code.user_id, 'code_id': reset_code.id},
             salt='civicfix.password-reset',
         )
-        return Response({'message': 'Email verified. You can now choose a new password.', 'reset_token': reset_token})
+        return Response({'message': 'Account verified. You can now set a new password.', 'reset_token': reset_token})
 
 
 class PasswordResetConfirmView(APIView):
@@ -231,7 +225,7 @@ class PasswordResetConfirmView(APIView):
         confirm_password = str(request.data.get('confirm_password', ''))
 
         if not email or not reset_token or not new_password or not confirm_password:
-            return Response({'message': 'Email, verified reset session, and both password fields are required.'}, status=400)
+            return Response({'message': 'Email, reset link, and both password fields are required.'}, status=400)
         if new_password != confirm_password:
             return Response({'message': 'The passwords do not match.'}, status=400)
         try:
@@ -240,18 +234,13 @@ class PasswordResetConfirmView(APIView):
             return Response({'message': 'Enter a valid email address.'}, status=400)
 
         try:
-            token_data = signing.loads(
-                reset_token,
-                salt='civicfix.password-reset',
-                max_age=600,
-            )
+            token_data = signing.loads(reset_token, salt='civicfix.password-reset', max_age=600)
         except signing.SignatureExpired:
-            return Response({'message': 'Email verification expired. Request and verify a new code.'}, status=400)
+            return Response({'message': 'Account verification expired. Request a new recovery code.'}, status=400)
         except signing.BadSignature:
-            return Response({'message': 'Email verification is invalid. Request and verify a new code.'}, status=400)
-
+            return Response({'message': 'Account verification is invalid. Request a new recovery code.'}, status=400)
         if token_data.get('email') != email:
-            return Response({'message': 'Email verification is invalid. Request and verify a new code.'}, status=400)
+            return Response({'message': 'Account verification is invalid. Request a new recovery code.'}, status=400)
 
         reset_code = PasswordResetCode.objects.filter(
             pk=token_data.get('code_id'),
@@ -264,7 +253,7 @@ class PasswordResetConfirmView(APIView):
             attempts__lt=5,
         ).select_related('user').first()
         if not reset_code:
-            return Response({'message': 'Email verification expired. Request and verify a new code.'}, status=400)
+            return Response({'message': 'Account verification expired. Request a new recovery code.'}, status=400)
 
         try:
             validate_password(new_password, user=reset_code.user)
