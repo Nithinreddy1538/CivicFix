@@ -1325,8 +1325,35 @@ img {
 }
 
 .register-page {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     min-height: calc(100vh - 72px);
     padding: 1px 0;
+}
+
+.register-page > .container {
+    width: min(100%, 1320px);
+    max-width: 1320px;
+    padding-right: clamp(28px, 7vw, 132px);
+}
+
+.register-page .row {
+    justify-content: flex-end !important;
+}
+
+@media (max-width: 820px) {
+    .register-page {
+        justify-content: center;
+    }
+
+    .register-page > .container {
+        padding-right: var(--bs-gutter-x, 12px);
+    }
+
+    .register-page .row {
+        justify-content: center !important;
+    }
 }
 
 .auth-card {
