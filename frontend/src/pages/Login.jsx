@@ -68,7 +68,7 @@ function Login() {
     };
 
     return (
-        <main className="login-page page-enter">
+        <main className="login-page auth-page-background page-enter">
             <div className="login-glow login-glow-one" aria-hidden="true" />
             <div className="login-glow login-glow-two" aria-hidden="true" />
 

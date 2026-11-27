@@ -66,7 +66,7 @@ function ForgotPassword() {
     };
 
     return (
-        <main className="reset-page page-enter">
+        <main className="reset-page auth-page-background page-enter">
             <section className="reset-card" aria-labelledby="reset-title">
                 <Link to="/login" className="reset-brand">
                     <span><i className="bi bi-shield-check" /></span> Fixora

@@ -45,9 +45,10 @@ function Register() {
     };
 
     return (
-        <div className="container py-5 position-relative page-enter">
-            <div className="hero-orb hero-orb-1"></div>
-            <div className="hero-orb hero-orb-2"></div>
+        <main className="register-page auth-page-background page-enter">
+            <div className="container py-5 position-relative">
+                <div className="hero-orb hero-orb-1"></div>
+                <div className="hero-orb hero-orb-2"></div>
 
             <div className="row justify-content-center position-relative" style={{ zIndex: 2 }}>
                 <div className="col-md-7 col-lg-6">
@@ -210,7 +211,8 @@ function Register() {
 
                 </div>
             </div>
-        </div>
+            </div>
+        </main>
     );
 }
 
