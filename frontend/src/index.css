@@ -15,7 +15,7 @@
     --bs-success-text-emphasis: #385879;
     --bs-success-bg-subtle: #eef5fc;
     --bs-success-border-subtle: #cdddef;
-    --civic-card-bg: rgba(255, 255, 255, 0.96);
+    --civic-card-bg: rgba(246, 250, 255, 0.76);
     --civic-border: rgba(107, 147, 190, 0.12);
     --civic-border-hover: rgba(107, 147, 190, 0.32);
     --civic-shadow-sm: 0 2px 6px rgba(56, 88, 121, 0.04), 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -36,8 +36,11 @@ body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--civic-bg);
-    background-image: radial-gradient(rgba(107, 147, 190, 0.08) 1.2px, transparent 1.2px);
-    background-size: 28px 28px;
+    background-image: linear-gradient(rgba(235, 244, 253, .30), rgba(230, 241, 252, .38)), url("/fixora-auth-background.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
     color: #1e293b;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -609,15 +612,40 @@ img {
     border-radius: var(--civic-radius);
     box-shadow: var(--civic-shadow-sm);
     transition: transform 0.3s var(--civic-ease), box-shadow 0.3s var(--civic-ease), border-color 0.3s ease;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    animation: siteCardEntrance .55s var(--civic-ease) both;
 }
 
-.card.shadow-sm:hover,
+.card:hover,
 .feature-card:hover {
     transform: translateY(-6px);
     box-shadow: var(--civic-shadow-lg);
     border-color: var(--civic-border-hover);
+}
+
+.row > :nth-child(2) .card { animation-delay: 70ms; }
+.row > :nth-child(3) .card { animation-delay: 140ms; }
+.row > :nth-child(4) .card { animation-delay: 210ms; }
+
+@keyframes siteCardEntrance {
+    from { opacity: 0; transform: translateY(14px) scale(.99); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.btn {
+    transition: transform .22s var(--civic-ease), box-shadow .22s ease, background-color .22s ease, border-color .22s ease;
+}
+
+.btn:focus-visible,
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid rgba(75, 139, 209, .58);
+    outline-offset: 3px;
+}
+
+.btn:not(:disabled):hover {
+    transform: translateY(-2px);
 }
 
 .card-header {
@@ -822,6 +850,7 @@ img {
     transition: transform 0.3s var(--civic-ease), box-shadow 0.3s ease;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    animation: siteCardEntrance .58s var(--civic-ease) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -861,7 +890,7 @@ img {
    Modern Stat Cards System
    -------------------------------------------------------------------------- */
 .stat-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(246, 250, 255, 0.76);
     border-radius: var(--civic-radius);
     border: 1px solid rgba(107, 147, 190, 0.12);
     position: relative;
@@ -869,6 +898,8 @@ img {
     transition: transform 0.3s var(--civic-ease), box-shadow 0.3s var(--civic-ease), border-color 0.3s ease;
     box-shadow: var(--civic-shadow-sm);
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    animation: siteCardEntrance .55s var(--civic-ease) both;
 }
 
 .stat-card::before {
@@ -1304,11 +1335,26 @@ img {
 }
 
 .glass-card {
-    background: rgba(255, 255, 255, 0.92) !important;
+    background: rgba(246, 250, 255, 0.76) !important;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(107, 147, 190, 0.16) !important;
     box-shadow: 0 12px 32px -4px rgba(56, 88, 121, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card,
+    .stat-card,
+    .flow-step-card {
+        animation: none !important;
+    }
+
+    .btn,
+    .card,
+    .stat-card,
+    .flow-step-card {
+        transition: none !important;
+    }
 }
 
 /* --------------------------------------------------------------------------
