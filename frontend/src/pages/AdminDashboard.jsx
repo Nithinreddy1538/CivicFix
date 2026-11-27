@@ -15,12 +15,6 @@ function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [mapMode, setMapMode] = useState("pins");
 
-    const [search, setSearch] = useState("");
-    const [statusFilter, setStatusFilter] = useState("all");
-    const [priorityFilter, setPriorityFilter] = useState("all");
-    const [categoryFilter, setCategoryFilter] = useState("all");
-    const [dateFilter, setDateFilter] = useState("");
-    const [viewFilter, setViewFilter] = useState("all");
 
     // Officer Management & Recruitment States
     const [officers, setOfficers] = useState([]);
@@ -125,59 +119,6 @@ function AdminDashboard() {
     if (!isAdmin) {
         return <Navigate to="/dashboard" />;
     }
-
-    const filteredComplaints = complaints.filter((complaint) => {
-
-        const searchMatch =
-            !search ||
-            complaint.complaint_id?.toLowerCase().includes(search.toLowerCase()) ||
-            complaint.title?.toLowerCase().includes(search.toLowerCase()) ||
-            complaint.location?.toLowerCase().includes(search.toLowerCase());
-
-        const statusMatch =
-            statusFilter === "all" ||
-            !statusFilter ||
-            complaint.status === statusFilter;
-
-        const priorityMatch =
-            priorityFilter === "all" ||
-            !priorityFilter ||
-            complaint.priority === priorityFilter;
-
-        const categoryMatch =
-            categoryFilter === "all" ||
-            !categoryFilter ||
-            complaint.category === categoryFilter;
-
-        const dateMatch =
-            !dateFilter ||
-            complaint.created_at?.startsWith(dateFilter);
-
-        const viewMatch =
-            viewFilter === "all" ||
-            (viewFilter === "active" &&
-                !["resolved", "rejected"].includes(complaint.status)) ||
-            (viewFilter === "resolved" &&
-                complaint.status === "resolved");
-
-        return (
-            searchMatch &&
-            statusMatch &&
-            priorityMatch &&
-            categoryMatch &&
-            dateMatch &&
-            viewMatch
-        );
-    });
-
-    const clearFilters = () => {
-        setSearch("");
-        setStatusFilter("all");
-        setPriorityFilter("all");
-        setCategoryFilter("all");
-        setDateFilter("");
-        setViewFilter("all");
-    };
 
     const handleDeleteComplaint = async (id, complaintId) => {
         const confirmed = window.confirm(
@@ -612,245 +553,78 @@ function AdminDashboard() {
 
             <AdminUserManagement />
 
-            <div id="admin-complaints" className="card shadow-sm mb-4" style={{ scrollMarginTop: "88px" }}>
-
-                <div className="card-body">
-
-                    <h5 className="fw-bold mb-3">
-                        <i className="bi bi-funnel me-2"></i>
-                        Search & Filters
-                    </h5>
-
-                    <div className="row g-3">
-
-                        <div className="col-md-4">
-
-                            <label className="form-label">
-                                Search
-                            </label>
-
-                            <div className="input-group">
-
-                                <span className="input-group-text">
-                                    <i className="bi bi-search"></i>
-                                </span>
-
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Complaint ID, title or location"
-                                    value={search}
-                                    onChange={(e) =>
-                                        setSearch(e.target.value)
-                                    }
-                                />
-
-                            </div>
-
-                        </div>
-
-                        <div className="col-md-2">
-
-                            <label className="form-label">
-                                Status
-                            </label>
-
-                            <select
-                                className="form-select"
-                                value={statusFilter}
-                                onChange={(e) =>
-                                    setStatusFilter(e.target.value)
-                                }
-                            >
-
-                                <option value="">
-                                    All Status
-                                </option>
-
-                                <option value="pending">
-                                    Pending
-                                </option>
-
-                                <option value="assigned">
-                                    Assigned
-                                </option>
-
-                                <option value="in_progress">
-                                    In Progress
-                                </option>
-
-                                <option value="resolved">
-                                    Resolved
-                                </option>
-
-                                <option value="rejected">
-                                    Rejected
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                        <div className="col-md-2">
-
-                            <label className="form-label">
-                                Priority
-                            </label>
-
-                            <select
-                                className="form-select"
-                                value={priorityFilter}
-                                onChange={(e) =>
-                                    setPriorityFilter(e.target.value)
-                                }
-                            >
-
-                                <option value="">
-                                    All Priority
-                                </option>
-
-                                <option value="low">
-                                    Low
-                                </option>
-
-                                <option value="medium">
-                                    Medium
-                                </option>
-
-                                <option value="high">
-                                    High
-                                </option>
-
-                                <option value="critical">
-                                    Critical
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                        <div className="col-md-2">
-
-                            <label className="form-label">
-                                Category
-                            </label>
-
-                            <select
-                                className="form-select"
-                                value={categoryFilter}
-                                onChange={(e) =>
-                                    setCategoryFilter(e.target.value)
-                                }
-                            >
-
-                                <option value="all">
-                                    All Categories
-                                </option>
-
-                                <option value="pothole">
-                                    Road Pothole
-                                </option>
-
-                                <option value="street_light">
-                                    Street Light
-                                </option>
-
-                                <option value="garbage">
-                                    Garbage
-                                </option>
-
-                                <option value="water_leakage">
-                                    Water Leakage
-                                </option>
-
-                                <option value="drainage">
-                                    Drainage
-                                </option>
-
-                                <option value="traffic_signal">
-                                    Traffic Signal
-                                </option>
-
-                                <option value="public_property">
-                                    Public Property
-                                </option>
-
-                                <option value="other">
-                                    Other
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                        <div className="col-md-3">
-
-                            <label className="form-label">
-                                View
-                            </label>
-
-                            <select
-                                className="form-select"
-                                value={viewFilter}
-                                onChange={(e) =>
-                                    setViewFilter(e.target.value)
-                                }
-                            >
-                                <option value="all">All Complaints</option>
-                                <option value="active">Active Complaints</option>
-                                <option value="resolved">Resolved Complaints</option>
-                            </select>
-
-                        </div>
-
-                        <div className="col-md-3">
-
-                            <label className="form-label">
-                                Date
-                            </label>
-
-                            <input
-                                type="date"
-                                className="form-control"
-                                value={dateFilter}
-                                onChange={(e) =>
-                                    setDateFilter(e.target.value)
-                                }
-                            />
-
-                        </div>
-
-                        <div className="col-md-2 d-flex align-items-end">
-
-                            <button
-                                className="btn btn-outline-secondary w-100"
-                                onClick={clearFilters}
-                            >
-                                <i className="bi bi-x-circle me-1"></i>
-                                Clear
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <div className="mt-3 text-muted">
-
-                        Showing{" "}
-                        <strong>
-                            {filteredComplaints.length}
-                        </strong>{" "}
-                        of{" "}
-                        <strong>
-                            {complaints.length}
-                        </strong>{" "}
-                        complaints
-
-                    </div>
-
+            <section id="admin-complaints" className="admin-complaints-heading mb-3" style={{ scrollMarginTop: "88px" }}>
+                <div>
+                    <span className="admin-section-kicker">CITIZEN REPORTS</span>
+                    <h2 className="h3 fw-bold mb-1">All complaints</h2>
+                    <p className="text-muted mb-0">Every report is shown as submitted, with its original details and attachments.</p>
                 </div>
+                <span className="admin-complaint-count"><i className="bi bi-inbox me-2" />{complaints.length} reports</span>
+            </section>
 
-            </div>
+            {loading ? (
+                <div className="card"><div className="card-body text-center py-5">Loading complaints...</div></div>
+            ) : complaints.length === 0 ? (
+                <div className="card"><div className="card-body text-center py-5">
+                    <i className="bi bi-inbox fs-1 text-primary" />
+                    <h3 className="h5 mt-3">No complaints yet</h3>
+                    <p className="text-muted mb-0">Citizen reports will appear here when submitted.</p>
+                </div></div>
+            ) : (
+                <div className="row g-3 admin-complaints-list">
+                    {complaints.map((complaint) => (
+                        <div className="col-12" key={complaint.id}>
+                            <article className={`admin-complaint-card${complaint.image ? " has-photo" : ""}`}>
+                                <div className="admin-complaint-card-header">
+                                    <div>
+                                        <span className="admin-complaint-id">{complaint.complaint_id}</span>
+                                        <span className="admin-complaint-date">
+                                            {complaint.created_at ? new Date(complaint.created_at).toLocaleString() : "Date unavailable"}
+                                        </span>
+                                    </div>
+                                    <div className="d-flex flex-wrap gap-2">
+                                        <span className={`badge ${complaint.status === "resolved" ? "bg-success" : complaint.status === "rejected" ? "bg-danger" : complaint.status === "in_progress" ? "bg-info text-dark" : complaint.status === "assigned" ? "bg-primary" : "bg-warning text-dark"}`}>
+                                            {complaint.status?.replaceAll("_", " ")}
+                                        </span>
+                                        <span className={`badge ${complaint.priority === "critical" || complaint.priority === "high" ? "bg-danger" : complaint.priority === "medium" ? "bg-primary" : "bg-secondary"}`}>
+                                            {complaint.priority}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="admin-complaint-card-content">
+                                    {complaint.image && (
+                                        <a className="admin-complaint-photo-link" href={complaint.image.startsWith("http") ? complaint.image : `https://civicfix-fs43.onrender.com${complaint.image}`} target="_blank" rel="noreferrer" aria-label="Open the citizen's original complaint photo">
+                                            <img className="admin-complaint-photo" src={complaint.image.startsWith("http") ? complaint.image : `https://civicfix-fs43.onrender.com${complaint.image}`} alt="Photo submitted with this complaint" />
+                                        </a>
+                                    )}
+                                    <div className="admin-complaint-original">
+                                        <span className="admin-complaint-field-label">Citizen's title</span>
+                                        <h3 className="admin-complaint-title">{complaint.title}</h3>
+                                        <span className="admin-complaint-field-label">Citizen's description</span>
+                                        <p className="admin-complaint-description">{complaint.description}</p>
+                                        <div className="admin-complaint-meta">
+                                            <span><i className="bi bi-tag me-2" /><strong>Category:</strong> {complaint.category}</span>
+                                            <span><i className="bi bi-geo-alt me-2" /><strong>Location:</strong> {complaint.location}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="admin-complaint-card-actions">
+                                    <Link to={`/admin/complaints/${complaint.id}`} className="btn btn-success">
+                                        <i className="bi bi-eye me-2" />View and manage
+                                    </Link>
+                                    <button type="button" className="btn btn-outline-danger" onClick={() => handleDeleteComplaint(complaint.id, complaint.complaint_id)}>
+                                        <i className="bi bi-trash3 me-2" />Delete report
+                                    </button>
+                                </div>
+                            </article>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+
 
             <div className="card shadow-sm mb-4">
 
@@ -888,11 +662,11 @@ function AdminDashboard() {
 
                     {mapMode === "pins" ? (
                         <ComplaintMap
-                            complaints={filteredComplaints}
+                            complaints={complaints}
                         />
                     ) : (
                         <ComplaintHeatmap
-                            complaints={filteredComplaints}
+                            complaints={complaints}
                         />
                     )}
 
@@ -900,195 +674,6 @@ function AdminDashboard() {
 
             </div>
 
-            <div className="card shadow-sm">
-
-                <div className="card-body">
-
-                    <h4 className="mb-4">
-                        Complaints
-                    </h4>
-
-                    {loading ? (
-
-                        <div className="text-center py-4">
-                            Loading complaints...
-                        </div>
-
-                    ) : filteredComplaints.length === 0 ? (
-
-                        <div className="alert alert-info">
-                            No complaints match your filters.
-                        </div>
-
-                    ) : (
-
-                        <div className="table-responsive">
-
-                            <table className="table table-hover table-glide align-middle">
-
-                                <thead>
-
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Photo</th>
-                                        <th>Title</th>
-                                        <th>Category</th>
-                                        <th>Location</th>
-                                        <th>Priority</th>
-                                        <th>Status</th>
-                                        <th className="text-end">Actions</th>
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-
-                                    {filteredComplaints.map(
-                                        complaint => (
-
-                                            <tr key={complaint.id}>
-
-                                                <td>
-                                                    <strong>
-                                                        {complaint.complaint_id}
-                                                    </strong>
-                                                    {complaint.priority === "critical" && (
-                                                        <span className="badge bg-danger ms-2">
-                                                            <i className="bi bi-exclamation-triangle me-1"></i>
-                                                            Critical
-                                                        </span>
-                                                    )}
-                                                </td>
-
-                                                <td>
-                                                    {complaint.image ? (
-                                                        <a
-                                                            href={complaint.image.startsWith("http") ? complaint.image : `https://civicfix-fs43.onrender.com${complaint.image}`}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            title="Click to view full image"
-                                                        >
-                                                            <img
-                                                                src={complaint.image.startsWith("http") ? complaint.image : `https://civicfix-fs43.onrender.com${complaint.image}`}
-                                                                alt="Complaint"
-                                                                className="rounded shadow-sm border"
-                                                                style={{ width: "42px", height: "42px", objectFit: "cover" }}
-                                                            />
-                                                        </a>
-                                                    ) : (
-                                                        <span className="badge bg-light text-muted border p-2" title="No photo uploaded">
-                                                            <i className="bi bi-image"></i>
-                                                        </span>
-                                                    )}
-                                                </td>
-
-                                                <td>
-                                                    {complaint.title}
-                                                </td>
-
-                                                <td>
-                                                    {complaint.category.replace(
-                                                        "_",
-                                                        " "
-                                                    )}
-                                                </td>
-
-                                                <td>
-                                                    {complaint.location}
-                                                </td>
-
-                                                <td>
-
-                                                    <span
-                                                        className={`badge ${
-                                                            complaint.priority === "critical"
-                                                                ? "bg-danger"
-                                                                : complaint.priority === "high"
-                                                                ? "bg-warning text-dark"
-                                                                : complaint.priority === "medium"
-                                                                ? "bg-primary"
-                                                                : "bg-secondary"
-                                                        }`}
-                                                    >
-                                                        {complaint.priority}
-                                                    </span>
-
-                                                </td>
-
-                                                <td>
-
-                                                    <span
-                                                        className={`badge ${
-                                                            complaint.status === "resolved"
-                                                                ? "bg-success"
-                                                                : complaint.status === "rejected"
-                                                                ? "bg-danger"
-                                                                : complaint.status === "in_progress"
-                                                                ? "bg-info text-dark"
-                                                                : complaint.status === "assigned"
-                                                                ? "bg-primary"
-                                                                : "bg-warning text-dark"
-                                                        }`}
-                                                    >
-                                                        {complaint.status.replace(
-                                                            "_",
-                                                            " "
-                                                        )}
-                                                    </span>
-
-                                                    {complaint.status !== "resolved" &&
-                                                        complaint.status !== "rejected" &&
-                                                        new Date(complaint.created_at).getTime() +
-                                                            (complaint.sla_hours || 48) * 60 * 60 * 1000 <
-                                                            Date.now() && (
-                                                            <span className="badge bg-danger ms-2">
-                                                                Overdue
-                                                            </span>
-                                                        )}
-
-                                                </td>
-
-                                                <td className="text-end">
-
-                                                    <div className="d-inline-flex gap-2">
-                                                        <Link
-                                                            to={`/admin/complaints/${complaint.id}`}
-                                                            className="btn btn-sm btn-outline-success"
-                                                            title="View details and dispatch officer"
-                                                        >
-                                                            <i className="bi bi-eye me-1"></i>
-                                                            View
-                                                        </Link>
-
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-sm btn-outline-danger"
-                                                            onClick={() => handleDeleteComplaint(complaint.id, complaint.complaint_id)}
-                                                            title="Delete this complaint permanently"
-                                                        >
-                                                            <i className="bi bi-trash3 me-1"></i>
-                                                            Delete
-                                                        </button>
-                                                    </div>
-
-                                                </td>
-
-                                            </tr>
-
-                                        )
-                                    )}
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-                    )}
-
-                </div>
-
-            </div>
 
         </div>
     );
