@@ -5,6 +5,19 @@ function Home() {
         <div>
             {/* Hero Section */}
             <section className="hero-section position-relative overflow-hidden">
+                <video
+                    className="home-hero-video"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    aria-hidden="true"
+                    tabIndex={-1}
+                >
+                    <source src="/home-background.mp4" type="video/mp4" />
+                </video>
+                <div className="home-hero-video-overlay" aria-hidden="true"></div>
                 <div className="hero-orb hero-orb-1"></div>
                 <div className="hero-orb hero-orb-2"></div>
 
