@@ -229,7 +229,7 @@ function AdminDashboard() {
                     </h2>
 
                     <p className="text-muted mb-0">
-                        Manage and monitor all CivicFix complaints
+                        Manage and monitor all Fixora complaints
                     </p>
                 </div>
 

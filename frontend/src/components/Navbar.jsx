@@ -86,7 +86,7 @@ function Navbar() {
                     <span className="p-1 rounded-circle bg-white text-success d-inline-flex align-items-center justify-content-center me-1" style={{ width: "32px", height: "32px" }}>
                         <i className="bi bi-shield-check"></i>
                     </span>
-                    CivicFix
+                    Fixora
                 </Link>
 
                 <button

@@ -83,7 +83,7 @@ function ForgotPassword() {
         <main className="reset-page page-enter">
             <section className="reset-card" aria-labelledby="reset-title">
                 <Link to="/login" className="reset-brand">
-                    <span><i className="bi bi-shield-check" /></span> CivicFix
+                    <span><i className="bi bi-shield-check" /></span> Fixora
                 </Link>
                 <div className="reset-icon"><i className={`bi ${complete ? "bi-check2-circle" : accountVerified ? "bi-unlock" : codeSent ? "bi-shield-lock" : "bi-key"}`} /></div>
                 <span className="reset-eyebrow">ACCOUNT RECOVERY</span>

@@ -199,7 +199,7 @@ function Register() {
                             </form>
 
                             <div className="text-center mt-4 pt-3 border-top">
-                                <span className="small text-muted">Already registered with CivicFix? </span>
+                                <span className="small text-muted">Already registered with Fixora? </span>
                                 <Link to="/login" className="small text-success fw-bold text-decoration-none">
                                     Sign In here
                                 </Link>

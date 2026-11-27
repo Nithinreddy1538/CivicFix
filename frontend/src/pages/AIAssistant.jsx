@@ -13,7 +13,7 @@ function AIAssistant() {
     const [chatHistory, setChatHistory] = useState([
         {
             sender: "ai",
-            text: `Hello! I’m your CivicFix assistant for your ${role} account. ${role === "admin" ? "I can summarize cases and help manage staff and citizen accounts." : role === "officer" ? "I can summarize your assigned work and help with complaint updates and resolution." : "I can help track your reports, explain status updates, and guide you through submitting an issue."}`
+            text: `Hello! I’m your Fixora assistant for your ${role} account. ${role === "admin" ? "I can summarize cases and help manage staff and citizen accounts." : role === "officer" ? "I can summarize your assigned work and help with complaint updates and resolution." : "I can help track your reports, explain status updates, and guide you through submitting an issue."}`
         }
     ]);
     const [loading, setLoading] = useState(false);
@@ -72,7 +72,7 @@ function AIAssistant() {
                         <div className="card-header bg-success text-white py-3">
                             <h4 className="fw-bold mb-0">
                                 <i className="bi bi-stars me-2"></i>
-                                CivicFix AI Assistant
+                                Fixora AI Assistant
                             </h4>
                             <small className="opacity-75">
                                 Guidance and account-scoped civic service support
@@ -128,7 +128,7 @@ function AIAssistant() {
                                         <span className="typing-dot"></span>
                                         <span className="typing-dot"></span>
                                     </div>
-                                    <small className="text-muted fw-semibold">CivicFix AI is analyzing...</small>
+                                    <small className="text-muted fw-semibold">Fixora AI is analyzing...</small>
                                 </div>
                             )}
                         </div>

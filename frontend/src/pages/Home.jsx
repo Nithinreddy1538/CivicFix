@@ -65,6 +65,40 @@ function AnimatedMetric({ end, suffix = "", prefix = "", label, delay = 0 }) {
     );
 }
 
+function RevealOnScroll({ children, delay = 0, className = "" }) {
+    const [visible, setVisible] = useState(false);
+    const itemRef = useRef(null);
+
+    useEffect(() => {
+        const item = itemRef.current;
+        if (!item) return undefined;
+        if (!("IntersectionObserver" in window)) {
+            setVisible(true);
+            return undefined;
+        }
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setVisible(true);
+                observer.disconnect();
+            }
+        }, { threshold: 0.18 });
+
+        observer.observe(item);
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <div
+            ref={itemRef}
+            className={`home-reveal${visible ? " is-visible" : ""} ${className}`.trim()}
+            style={{ "--reveal-delay": `${delay}ms` }}
+        >
+            {children}
+        </div>
+    );
+}
+
 function Home() {
     return (
         <div>
@@ -81,7 +115,7 @@ function Home() {
                     </div>
 
                     <h1 className="display-4 fw-bold hero-title">
-                        CivicFix
+                        Fixora
                     </h1>
 
                     <p className="lead hero-lead mx-auto mb-4" style={{ maxWidth: "660px" }}>
@@ -143,6 +177,7 @@ function Home() {
 
                 <div className="row g-4">
                     <div className="col-md-4">
+                        <RevealOnScroll className="h-100" delay={0}>
                         <div className="card h-100 shadow-sm feature-card">
                             <div className="card-body text-center p-4">
                                 <div className="feature-icon-wrapper mb-3">
@@ -160,9 +195,11 @@ function Home() {
                                 </Link>
                             </div>
                         </div>
+                        </RevealOnScroll>
                     </div>
 
                     <div className="col-md-4">
+                        <RevealOnScroll className="h-100" delay={180}>
                         <div className="card h-100 shadow-sm feature-card">
                             <div className="card-body text-center p-4">
                                 <div className="feature-icon-wrapper mb-3">
@@ -180,9 +217,11 @@ function Home() {
                                 </Link>
                             </div>
                         </div>
+                        </RevealOnScroll>
                     </div>
 
                     <div className="col-md-4">
+                        <RevealOnScroll className="h-100" delay={360}>
                         <div className="card h-100 shadow-sm feature-card">
                             <div className="card-body text-center p-4">
                                 <div className="feature-icon-wrapper mb-3">
@@ -200,13 +239,15 @@ function Home() {
                                 </Link>
                             </div>
                         </div>
+                        </RevealOnScroll>
                     </div>
                 </div>
             </section>
 
-            {/* How CivicFix Works Interactive Step Flow */}
+            {/* How Fixora Works Interactive Step Flow */}
             <section className="container py-5">
-                <div className="card shadow-sm p-4 p-md-5 border-0" style={{ background: "linear-gradient(135deg, #ffffff 0%, #edf4fb 100%)", borderRadius: "20px" }}>
+                <RevealOnScroll>
+                <div className="card shadow-sm p-4 p-md-5 border-0 home-workflow-card">
                     <div className="text-center mb-5">
                         <span className="badge bg-success mb-2 px-3 py-2">Workflow</span>
                         <h3 className="fw-bold">How Your Issue Gets Fixed</h3>
@@ -215,6 +256,7 @@ function Home() {
 
                     <div className="row g-4">
                         <div className="col-md-3">
+                            <RevealOnScroll delay={0}>
                             <div className="flow-step-card h-100">
                                 <div className="flow-step-circle">
                                     <i className="bi bi-camera-fill"></i>
@@ -222,9 +264,11 @@ function Home() {
                                 <h5 className="fw-bold">1. Submit</h5>
                                 <p className="small text-muted mb-0">Snap a photo with auto-detected GPS location.</p>
                             </div>
+                            </RevealOnScroll>
                         </div>
 
                         <div className="col-md-3">
+                            <RevealOnScroll delay={160}>
                             <div className="flow-step-card h-100">
                                 <div className="flow-step-circle">
                                     <i className="bi bi-cpu-fill"></i>
@@ -232,9 +276,11 @@ function Home() {
                                 <h5 className="fw-bold">2. AI Triaged</h5>
                                 <p className="small text-muted mb-0">AI assigns category, priority & department SLA.</p>
                             </div>
+                            </RevealOnScroll>
                         </div>
 
                         <div className="col-md-3">
+                            <RevealOnScroll delay={320}>
                             <div className="flow-step-card h-100">
                                 <div className="flow-step-circle">
                                     <i className="bi bi-tools"></i>
@@ -242,9 +288,11 @@ function Home() {
                                 <h5 className="fw-bold">3. Dispatched</h5>
                                 <p className="small text-muted mb-0">Ward officer initiates on-site repair work.</p>
                             </div>
+                            </RevealOnScroll>
                         </div>
 
                         <div className="col-md-3">
+                            <RevealOnScroll delay={480}>
                             <div className="flow-step-card h-100">
                                 <div className="flow-step-circle">
                                     <i className="bi bi-patch-check-fill"></i>
@@ -252,9 +300,11 @@ function Home() {
                                 <h5 className="fw-bold">4. Resolved</h5>
                                 <p className="small text-muted mb-0">Before/After proof uploaded and verified.</p>
                             </div>
+                            </RevealOnScroll>
                         </div>
                     </div>
                 </div>
+                </RevealOnScroll>
             </section>
         </div>
     );

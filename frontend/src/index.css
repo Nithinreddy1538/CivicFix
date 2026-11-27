@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CivicFix Design System & Advanced Animated Styles
+   Fixora Design System & Advanced Animated Styles
    Theme: Soft Civic Blue & Clean Modern Glassmorphism
    ========================================================================== */
 
@@ -637,9 +637,33 @@ img {
 
 /* Feature Cards on Homepage */
 .feature-card {
+    background: rgba(236, 244, 252, 0.76) !important;
+    border-color: rgba(255, 255, 255, 0.64);
     border-radius: var(--civic-radius);
     overflow: hidden;
     position: relative;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.home-reveal {
+    width: 100%;
+    opacity: 0;
+    transform: translateY(26px) scale(.98);
+    transition: opacity .68s ease, transform .68s var(--civic-ease);
+    transition-delay: var(--reveal-delay, 0ms);
+}
+
+.home-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.home-workflow-card {
+    background: rgba(236, 244, 252, .65) !important;
+    border: 1px solid rgba(255, 255, 255, .6) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .feature-icon-wrapper {
@@ -795,16 +819,27 @@ img {
 }
 
 /* --------------------------------------------------------------------------
-   Interactive Municipal Resolution Flow (How CivicFix Works)
+   Interactive Municipal Resolution Flow (How Fixora Works)
    -------------------------------------------------------------------------- */
 .flow-step-card {
-    background: rgba(255, 255, 255, 0.94);
+    background: rgba(239, 246, 253, 0.72);
     border: 1px solid rgba(107, 147, 190, 0.12);
     border-radius: var(--civic-radius);
     padding: 24px 16px;
     text-align: center;
     position: relative;
     transition: transform 0.3s var(--civic-ease), box-shadow 0.3s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-reveal,
+    .home-reveal.is-visible {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
 }
 
 .flow-step-card:hover {

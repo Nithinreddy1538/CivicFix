@@ -74,7 +74,7 @@ function Login() {
 
             <div className="login-shell">
                 <section className="login-intro" aria-labelledby="login-heading">
-                    <Link to="/" className="login-brand" aria-label="CivicFix home">
+                    <Link to="/" className="login-brand" aria-label="Fixora home">
                         <span className="login-brand-mark"><i className="bi bi-buildings" /></span>
                         <span>Civic<span>Fix</span></span>
                     </Link>
@@ -85,7 +85,7 @@ function Login() {
                     </div>
                     <div className="login-trust-note">
                         <span className="login-trust-icon"><i className="bi bi-shield-check" /></span>
-                        <span><strong>A more responsive city starts here.</strong><small>Secure access for every CivicFix community member.</small></span>
+                        <span><strong>A more responsive city starts here.</strong><small>Secure access for every Fixora community member.</small></span>
                     </div>
                     <span className="login-decorative-number" aria-hidden="true">01</span>
                 </section>
@@ -149,7 +149,7 @@ function Login() {
                         </button>
                     </form>
 
-                    <div className="login-register">New to CivicFix? <Link to="/register">Create a citizen account <i className="bi bi-arrow-up-right" /></Link></div>
+                    <div className="login-register">New to Fixora? <Link to="/register">Create a citizen account <i className="bi bi-arrow-up-right" /></Link></div>
                     <div className="login-panel-footer"><i className="bi bi-lock-fill" /> Your account details are protected</div>
                 </section>
             </div>
