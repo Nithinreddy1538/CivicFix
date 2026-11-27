@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import API from "../api";
-import ComplaintMap from "../components/ComplaintMap";
+import ComplaintLocation from "../components/ComplaintLocation";
 
 function OfficerComplaintDetails() {
 
@@ -427,32 +427,7 @@ function OfficerComplaintDetails() {
 
             </div>
 
-            <div className="card shadow-sm mt-4">
-
-                <div className="card-body">
-
-                    <h5 className="fw-bold mb-4">
-                        Complaint Location
-                    </h5>
-
-                    {complaint.latitude &&
-                    complaint.longitude ? (
-
-                        <ComplaintMap
-                            complaints={[complaint]}
-                        />
-
-                    ) : (
-
-                        <div className="alert alert-warning">
-                            Location coordinates are not available.
-                        </div>
-
-                    )}
-
-                </div>
-
-            </div>
+            <ComplaintLocation complaint={complaint} />
 
             <div className="card shadow-sm mt-4">
 
