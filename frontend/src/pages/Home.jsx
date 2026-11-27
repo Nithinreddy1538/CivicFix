@@ -101,7 +101,12 @@ function RevealOnScroll({ children, delay = 0, className = "" }) {
 
 function Home() {
     return (
-        <div>
+        <div className="home-page-shell">
+            <div className="home-page-video" aria-hidden="true">
+                <video autoPlay muted loop playsInline preload="metadata" tabIndex={-1}>
+                    <source src="/home-background.mp4" type="video/mp4" />
+                </video>
+            </div>
             {/* Hero Section */}
             <section className="hero-section position-relative overflow-hidden">
                 <div className="hero-orb hero-orb-1"></div>
