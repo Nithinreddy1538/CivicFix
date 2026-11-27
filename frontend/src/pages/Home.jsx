@@ -1,23 +1,75 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+
+function AnimatedMetric({ end, suffix = "", prefix = "", label, delay = 0 }) {
+    const [value, setValue] = useState(0);
+    const [started, setStarted] = useState(false);
+    const cardRef = useRef(null);
+
+    useEffect(() => {
+        const card = cardRef.current;
+        if (!card) return undefined;
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setStarted(true);
+                observer.disconnect();
+            }
+        }, { threshold: 0.35 });
+
+        observer.observe(card);
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (!started) return undefined;
+
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        let frame;
+        const wait = window.setTimeout(() => {
+            if (prefersReducedMotion) {
+                setValue(end);
+                return;
+            }
+
+            const duration = 1500;
+            const startAt = performance.now();
+            const animate = (now) => {
+                const progress = Math.min((now - startAt) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 4);
+                const precision = Number.isInteger(end) ? 1 : 10;
+                setValue(Math.round(end * precision * eased) / precision);
+                if (progress < 1) frame = requestAnimationFrame(animate);
+            };
+
+            frame = requestAnimationFrame(animate);
+        }, delay);
+
+        return () => {
+            window.clearTimeout(wait);
+            if (frame) cancelAnimationFrame(frame);
+        };
+    }, [delay, end, started]);
+
+    return (
+        <div
+            ref={cardRef}
+            className={`metric-card${started ? " metric-card-started" : ""}`}
+            style={{ "--metric-delay": `${delay}ms` }}
+        >
+            <h3 className="fw-bold text-success mb-1" aria-label={`${prefix}${end.toLocaleString()}${suffix}`}>
+                {prefix}{value.toLocaleString()}{suffix}
+            </h3>
+            <small className="text-muted fw-semibold">{label}</small>
+        </div>
+    );
+}
 
 function Home() {
     return (
         <div>
             {/* Hero Section */}
             <section className="hero-section position-relative overflow-hidden">
-                <video
-                    className="home-hero-video"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    aria-hidden="true"
-                    tabIndex={-1}
-                >
-                    <source src="/home-background.mp4" type="video/mp4" />
-                </video>
-                <div className="home-hero-video-overlay" aria-hidden="true"></div>
                 <div className="hero-orb hero-orb-1"></div>
                 <div className="hero-orb hero-orb-2"></div>
 
@@ -75,30 +127,10 @@ function Home() {
             {/* Municipal Impact Metric Counters Bar */}
             <section className="container my-5">
                 <div className="row g-3 text-center">
-                    <div className="col-6 col-md-3">
-                        <div className="metric-card">
-                            <h3 className="fw-bold text-success mb-1">12,500+</h3>
-                            <small className="text-muted fw-semibold">Issues Resolved</small>
-                        </div>
-                    </div>
-                    <div className="col-6 col-md-3">
-                        <div className="metric-card">
-                            <h3 className="fw-bold text-success mb-1">98.4%</h3>
-                            <small className="text-muted fw-semibold">SLA Adherence</small>
-                        </div>
-                    </div>
-                    <div className="col-6 col-md-3">
-                        <div className="metric-card">
-                            <h3 className="fw-bold text-success mb-1">&lt; 36 Hrs</h3>
-                            <small className="text-muted fw-semibold">Avg. Resolution Time</small>
-                        </div>
-                    </div>
-                    <div className="col-6 col-md-3">
-                        <div className="metric-card">
-                            <h3 className="fw-bold text-success mb-1">100%</h3>
-                            <small className="text-muted fw-semibold">Public Transparency</small>
-                        </div>
-                    </div>
+                    <div className="col-6 col-md-3"><AnimatedMetric end={12500} suffix="+" label="Issues Resolved" delay={0} /></div>
+                    <div className="col-6 col-md-3"><AnimatedMetric end={98.4} suffix="%" label="SLA Adherence" delay={350} /></div>
+                    <div className="col-6 col-md-3"><AnimatedMetric end={36} prefix="< " suffix=" Hrs" label="Avg. Resolution Time" delay={700} /></div>
+                    <div className="col-6 col-md-3"><AnimatedMetric end={100} suffix="%" label="Public Transparency" delay={1050} /></div>
                 </div>
             </section>
 

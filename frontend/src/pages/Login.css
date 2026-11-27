@@ -9,7 +9,7 @@
     padding: 54px 26px;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(125deg, #eef5fc 0%, #f5f9fe 48%, #e4eef9 100%);
+    background: rgba(232, 241, 251, .34);
 }
 
 .login-glow {
@@ -45,7 +45,8 @@
     overflow: hidden;
     border: 1px solid rgba(232, 207, 170, .9);
     border-radius: 28px;
-    background: #fff;
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(14px);
     box-shadow: 0 30px 90px rgba(56, 88, 121, .13), 0 4px 12px rgba(56, 88, 121, .04);
 }
 

@@ -23,10 +23,17 @@ import OfficerComplaintDetails from "./pages/OfficerComplaintDetails";
 function App() {
     return (
         <BrowserRouter>
+            <div className="civicfix-app-shell">
+                <div className="app-video-background" aria-hidden="true">
+                    <video autoPlay muted loop playsInline preload="metadata" tabIndex={-1}>
+                        <source src="/home-background.mp4" type="video/mp4" />
+                    </video>
+                </div>
 
-            <Navbar />
+                <Navbar />
 
-            <Routes>
+                <main className="app-page-content">
+                    <Routes>
 
                 <Route path="/" element={<Home />} />
 
@@ -133,8 +140,9 @@ function App() {
                     }
                 />
 
-            </Routes>
-
+                    </Routes>
+                </main>
+            </div>
         </BrowserRouter>
     );
 }
