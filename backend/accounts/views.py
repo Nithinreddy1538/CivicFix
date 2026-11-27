@@ -178,6 +178,57 @@ class PasswordResetRequestView(APIView):
         return Response(generic_response, status=200)
 
 
+class PasswordResetVerifyEmailView(APIView):
+    """Verify that a citizen/officer email exists and issue a short-lived reset token."""
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = str(request.data.get('email', '')).strip().lower()
+        if not email:
+            return Response({'message': 'Enter your registered email address.'}, status=400)
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response({'message': 'Enter a valid email address.'}, status=400)
+
+        user = User.objects.filter(
+            email__iexact=email,
+            is_active=True,
+            profile__role__in=['citizen', 'officer'],
+        ).first()
+        if not user:
+            return Response(
+                {'message': 'This email is not registered to an active citizen or officer account. Enter your registered email address.'},
+                status=400,
+            )
+
+        now = timezone.now()
+        recent_requests = PasswordResetCode.objects.filter(
+            user=user,
+            created_at__gte=now - timedelta(hours=1),
+        ).count()
+        if recent_requests >= 5:
+            return Response(
+                {'message': 'Too many password reset attempts. Please try again later.'},
+                status=429,
+            )
+
+        PasswordResetCode.objects.filter(user=user, used_at__isnull=True).update(used_at=now)
+        reset_record = PasswordResetCode.objects.create(
+            user=user,
+            code_hash=make_password(secrets.token_urlsafe(32)),
+            expires_at=now + timedelta(minutes=10),
+        )
+        reset_token = signing.dumps(
+            {'email': email, 'user_id': user.id, 'code_id': reset_record.id},
+            salt='civicfix.password-reset',
+        )
+        return Response({
+            'message': 'Registered email verified. You can now choose a new password.',
+            'reset_token': reset_token,
+        })
+
+
 class PasswordResetVerifyRecoveryCodeView(APIView):
     permission_classes = [AllowAny]
 
