@@ -36,11 +36,8 @@ body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--civic-bg);
-    background-image: linear-gradient(rgba(235, 244, 253, .30), rgba(230, 241, 252, .38)), url("/fixora-auth-background.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
+    background-image: radial-gradient(rgba(107, 147, 190, 0.08) 1.2px, transparent 1.2px);
+    background-size: 28px 28px;
     color: #1e293b;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -1348,6 +1345,15 @@ button:focus-visible {
     justify-content: space-between;
     gap: 20px;
     padding: 20px 4px 14px;
+}
+
+.complaint-location-card {
+    background-color: rgba(246, 250, 255, .78);
+    background-image: linear-gradient(rgba(239, 247, 255, .84), rgba(239, 247, 255, .84)), url("/fixora-auth-background.png");
+    background-position: center 68%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    backdrop-filter: blur(10px);
 }
 
 .admin-section-kicker,
