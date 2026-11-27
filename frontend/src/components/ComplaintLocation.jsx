@@ -48,9 +48,15 @@ function ComplaintLocation({ complaint }) {
                 {hasCoordinates ? (
                     <ComplaintMap complaints={[complaint]} />
                 ) : address ? (
-                    <p className="text-muted small mb-0">
-                        This complaint has an address but no GPS pin. Open it in Maps above to view the reported address.
-                    </p>
+                    <iframe
+                        title={`Map for complaint ${complaint.complaint_id || "location"}`}
+                        src={`https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed`}
+                        width="100%"
+                        height="380"
+                        style={{ border: 0, borderRadius: "12px" }}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                    />
                 ) : null}
             </div>
         </section>

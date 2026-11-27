@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import API from "../api";
 import ComplaintTracking from "../components/ComplaintTracking";
 import ComplaintSLA from "../components/ComplaintSLA";
+import ComplaintLocation from "../components/ComplaintLocation";
 
 function PublicComplaintTracking() {
     const { complaintId } = useParams();
@@ -139,6 +140,8 @@ function PublicComplaintTracking() {
                     </div>
                 </div>
             </div>
+
+            <ComplaintLocation complaint={complaint} />
 
             {/* Stepper Progress */}
             <ComplaintTracking complaint={complaint} />
