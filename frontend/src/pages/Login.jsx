@@ -73,27 +73,14 @@ function Login() {
             <div className="login-glow login-glow-two" aria-hidden="true" />
 
             <div className="login-shell">
-                <section className="login-intro" aria-labelledby="login-heading">
-                    <Link to="/" className="login-brand" aria-label="Fixora home">
-                        <span className="login-brand-mark"><i className="bi bi-buildings" /></span>
-                        <span>Civic<span>Fix</span></span>
+                <section className="login-panel" aria-labelledby="login-panel-title">
+                    <Link to="/" className="login-brand login-panel-brand" aria-label="Fixora home">
+                        <span className="login-brand-mark"><i className="bi bi-shield-check" /></span>
+                        <span>Fixora</span>
                     </Link>
-                    <div className="login-intro-copy">
-                        <span className="login-eyebrow"><span /> YOUR CITY, BETTER TOGETHER</span>
-                        <h1 id="login-heading">Good to have<br />you <em>back.</em></h1>
-                        <p>One place to raise concerns, coordinate local action, and make progress visible.</p>
-                    </div>
-                    <div className="login-trust-note">
-                        <span className="login-trust-icon"><i className="bi bi-shield-check" /></span>
-                        <span><strong>A more responsive city starts here.</strong><small>Secure access for every Fixora community member.</small></span>
-                    </div>
-                    <span className="login-decorative-number" aria-hidden="true">01</span>
-                </section>
-
-                <section className="login-panel" aria-label="Sign in">
                     <div className="login-panel-heading">
                         <span className="login-kicker">FIXORA ACCOUNT</span>
-                        <h2>Sign in to continue</h2>
+                        <h2 id="login-panel-title">Welcome back</h2>
                         <p>Choose your workspace to get started.</p>
                     </div>
 

@@ -71,7 +71,7 @@ body {
     z-index: -1;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(135deg, rgba(226, 238, 250, .66), rgba(245, 249, 254, .58) 50%, rgba(218, 232, 248, .68));
+    background: linear-gradient(135deg, rgba(226, 238, 250, .32), rgba(245, 249, 254, .24) 50%, rgba(218, 232, 248, .36));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1332,16 +1332,16 @@ img {
 .auth-card {
     border-radius: 20px;
     border: 1px solid rgba(107, 147, 190, 0.16);
-    background: rgba(239, 247, 255, 0.60);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: rgba(248, 251, 255, 0.86);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 18px 40px -8px rgba(56, 88, 121, 0.12);
     overflow: hidden;
     position: relative;
 }
 
 .auth-header {
-    background: linear-gradient(135deg, rgba(94, 139, 194, .70) 0%, rgba(123, 164, 210, .64) 100%);
+    background: linear-gradient(135deg, rgba(94, 139, 194, .82) 0%, rgba(123, 164, 210, .76) 100%);
     color: white;
     padding: 28px 24px;
     text-align: center;
