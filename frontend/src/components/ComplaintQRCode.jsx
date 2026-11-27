@@ -41,7 +41,7 @@ function ComplaintQRCode({ complaint }) {
                         <QRCodeSVG
                             value={trackingUrl}
                             size={180}
-                            fgColor="#77451f"
+                            fgColor="#385879"
                             level="M"
                         />
                     </div>
