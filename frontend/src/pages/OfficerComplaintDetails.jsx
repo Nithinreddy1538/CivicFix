@@ -427,7 +427,7 @@ function OfficerComplaintDetails() {
 
             </div>
 
-            <div className="card shadow-sm mt-4 complaint-location-card">
+            <div className="card shadow-sm mt-4">
 
                 <div className="card-body">
 

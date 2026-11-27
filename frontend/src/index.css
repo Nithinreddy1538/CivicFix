@@ -15,7 +15,7 @@
     --bs-success-text-emphasis: #385879;
     --bs-success-bg-subtle: #eef5fc;
     --bs-success-border-subtle: #cdddef;
-    --civic-card-bg: rgba(246, 250, 255, 0.76);
+    --civic-card-bg: rgba(255, 255, 255, 0.96);
     --civic-border: rgba(107, 147, 190, 0.12);
     --civic-border-hover: rgba(107, 147, 190, 0.32);
     --civic-shadow-sm: 0 2px 6px rgba(56, 88, 121, 0.04), 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -609,40 +609,14 @@ img {
     border-radius: var(--civic-radius);
     box-shadow: var(--civic-shadow-sm);
     transition: transform 0.3s var(--civic-ease), box-shadow 0.3s var(--civic-ease), border-color 0.3s ease;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    animation: siteCardEntrance .55s var(--civic-ease) both;
+    backdrop-filter: blur(6px);
 }
 
-.card:hover,
+.card.shadow-sm:hover,
 .feature-card:hover {
     transform: translateY(-6px);
     box-shadow: var(--civic-shadow-lg);
     border-color: var(--civic-border-hover);
-}
-
-.row > :nth-child(2) .card { animation-delay: 70ms; }
-.row > :nth-child(3) .card { animation-delay: 140ms; }
-.row > :nth-child(4) .card { animation-delay: 210ms; }
-
-@keyframes siteCardEntrance {
-    from { opacity: 0; transform: translateY(14px) scale(.99); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.btn {
-    transition: transform .22s var(--civic-ease), box-shadow .22s ease, background-color .22s ease, border-color .22s ease;
-}
-
-.btn:focus-visible,
-a:focus-visible,
-button:focus-visible {
-    outline: 3px solid rgba(75, 139, 209, .58);
-    outline-offset: 3px;
-}
-
-.btn:not(:disabled):hover {
-    transform: translateY(-2px);
 }
 
 .card-header {
@@ -847,7 +821,6 @@ button:focus-visible {
     transition: transform 0.3s var(--civic-ease), box-shadow 0.3s ease;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    animation: siteCardEntrance .58s var(--civic-ease) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -887,7 +860,7 @@ button:focus-visible {
    Modern Stat Cards System
    -------------------------------------------------------------------------- */
 .stat-card {
-    background: rgba(246, 250, 255, 0.76);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: var(--civic-radius);
     border: 1px solid rgba(107, 147, 190, 0.12);
     position: relative;
@@ -895,8 +868,6 @@ button:focus-visible {
     transition: transform 0.3s var(--civic-ease), box-shadow 0.3s var(--civic-ease), border-color 0.3s ease;
     box-shadow: var(--civic-shadow-sm);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    animation: siteCardEntrance .55s var(--civic-ease) both;
 }
 
 .stat-card::before {
@@ -1332,7 +1303,7 @@ button:focus-visible {
 }
 
 .glass-card {
-    background: rgba(246, 250, 255, 0.76) !important;
+    background: rgba(255, 255, 255, 0.92) !important;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(107, 147, 190, 0.16) !important;
@@ -1345,15 +1316,6 @@ button:focus-visible {
     justify-content: space-between;
     gap: 20px;
     padding: 20px 4px 14px;
-}
-
-.complaint-location-card {
-    background-color: rgba(246, 250, 255, .78);
-    background-image: linear-gradient(rgba(239, 247, 255, .84), rgba(239, 247, 255, .84)), url("/fixora-auth-background.png");
-    background-position: center 68%;
-    background-repeat: no-repeat;
-    background-size: cover;
-    backdrop-filter: blur(10px);
 }
 
 .admin-section-kicker,
@@ -1384,7 +1346,6 @@ button:focus-visible {
     box-shadow: var(--civic-shadow-sm);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    animation: siteCardEntrance .55s var(--civic-ease) both;
     transition: transform .25s var(--civic-ease), box-shadow .25s ease, border-color .25s ease;
 }
 
