@@ -7,7 +7,7 @@ from accounts.models import UserProfile
 
 
 class Command(BaseCommand):
-    help = "Create or update the CivicFix administrator account"
+    help = "Create or update the Fixora administrator account"
 
     def handle(self, *args, **options):
         password = os.getenv("CIVICFIX_ADMIN_PASSWORD")
@@ -34,5 +34,5 @@ class Command(BaseCommand):
 
         action = "Created" if created else "Updated"
         self.stdout.write(
-            self.style.SUCCESS(f"{action} CivicFix administrator account: {username}")
+            self.style.SUCCESS(f"{action} Fixora administrator account: {username}")
         )

@@ -155,9 +155,9 @@ class PasswordResetRequestView(APIView):
         )
         try:
             sent = send_mail(
-                subject='Your CivicFix password recovery code',
+                subject='Your Fixora password recovery code',
                 message=(
-                    f'Your CivicFix password recovery code is:\n\n{recovery_code}\n\n'
+                    f'Your Fixora password recovery code is:\n\n{recovery_code}\n\n'
                     'Enter this code on the password reset page. It expires in 10 minutes and can only be used once. '
                     'If you did not request this, you can ignore this email.'
                 ),
@@ -168,7 +168,7 @@ class PasswordResetRequestView(APIView):
             if not sent:
                 raise RuntimeError('The configured mail service did not accept the reset email.')
         except Exception:
-            logger.exception('Unable to deliver a CivicFix password reset email.')
+            logger.exception('Unable to deliver a Fixora password reset email.')
             PasswordResetCode.objects.filter(user=user, used_at__isnull=True).update(used_at=now)
             return Response(
                 {'message': 'Password reset email delivery is unavailable right now. Please contact the site administrator.'},

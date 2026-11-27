@@ -92,7 +92,7 @@ function Login() {
 
                 <section className="login-panel" aria-label="Sign in">
                     <div className="login-panel-heading">
-                        <span className="login-kicker">CIVICFIX ACCOUNT</span>
+                        <span className="login-kicker">FIXORA ACCOUNT</span>
                         <h2>Sign in to continue</h2>
                         <p>Choose your workspace to get started.</p>
                     </div>

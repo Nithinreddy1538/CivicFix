@@ -485,7 +485,7 @@ function AdminDashboard() {
                                             type="email"
                                             name="email"
                                             className="form-control"
-                                            placeholder="officer@civicfix.gov.in"
+                                            placeholder="officer@fixora.gov.in"
                                             value={recruitForm.email}
                                             onChange={handleRecruitChange}
                                             required

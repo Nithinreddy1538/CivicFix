@@ -1,4 +1,4 @@
-# 🏙️ CivicFix
+# 🏙️ Fixora
 
 <div align="center">
 
@@ -8,7 +8,7 @@
 
 <p>
   <a href="https://civicfix-frontend-hatx.onrender.com/">
-    <img src="https://img.shields.io/badge/🚀%20Live%20Demo-CivicFix-success?style=for-the-badge" alt="Live Demo">
+    <img src="https://img.shields.io/badge/🚀%20Live%20Demo-Fixora-success?style=for-the-badge" alt="Live Demo">
   </a>
   <a href="https://github.com/Nithinreddy1538/CivicFix">
     <img src="https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github" alt="GitHub">
@@ -23,7 +23,7 @@
 
 ## 🌟 Overview
 
-**CivicFix** is an end-to-end smart municipal grievance redressal platform that connects **citizens, municipal administrators, and field officers** through one unified digital workflow.
+**Fixora** is an end-to-end smart municipal grievance redressal platform that connects **citizens, municipal administrators, and field officers** through one unified digital workflow.
 
 The platform transforms traditional complaint handling into a transparent, trackable, and evidence-driven process.
 
@@ -284,7 +284,7 @@ Administrators can:
 
 # ⏱️ SLA Monitoring
 
-CivicFix supports SLA-based complaint monitoring.
+Fixora supports SLA-based complaint monitoring.
 
 Example target:
 
@@ -314,7 +314,7 @@ Administrators can identify overdue complaints and prioritize municipal resource
 
 # 🔐 Security & Access Control
 
-CivicFix implements role-based access control.
+Fixora implements role-based access control.
 
 ```text
                     🔐 Authentication
@@ -475,7 +475,7 @@ Install:
 ```bash
 git clone https://github.com/Nithinreddy1538/CivicFix.git
 
-cd CivicFix
+cd Fixora
 ```
 
 ---
@@ -574,7 +574,7 @@ The administrator account is created with `python manage.py seed_users` after se
 
 # 🌐 Production Deployment
 
-CivicFix is deployed using **Render**.
+Fixora is deployed using **Render**.
 
 The backend allows the deployed frontend and the local Vite origins (`http://localhost:5173` and `http://127.0.0.1:5173`) by default. Additional origins in `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS` are kept alongside those defaults.
 
@@ -597,7 +597,7 @@ The backend allows the deployed frontend and the local Vite origins (`http://loc
 
 ### Production URLs
 
-**🌐 CivicFix Application**
+**🌐 Fixora Application**
 
 https://civicfix-frontend-hatx.onrender.com/
 
@@ -613,7 +613,7 @@ https://github.com/Nithinreddy1538/CivicFix
 
 # 📊 Future Enhancements
 
-CivicFix is designed to become an AI-ready civic intelligence platform.
+Fixora is designed to become an AI-ready civic intelligence platform.
 
 ### 🤖 Planned AI Features
 
@@ -632,7 +632,7 @@ CivicFix is designed to become an AI-ready civic intelligence platform.
 Citizen Reports
        │
        ↓
-     CivicFix
+     Fixora
        │
  ┌─────┼────────┐
  ↓     ↓        ↓
@@ -647,7 +647,7 @@ Better City Services
 
 ---
 
-# 🎯 Why CivicFix?
+# 🎯 Why Fixora?
 
 Traditional grievance systems often suffer from:
 
@@ -658,7 +658,7 @@ Traditional grievance systems often suffer from:
 ❌ Limited performance visibility
 ❌ Poor citizen feedback loops
 
-CivicFix addresses these challenges with:
+Fixora addresses these challenges with:
 
 ```text
         REPORT
@@ -676,7 +676,7 @@ CivicFix addresses these challenges with:
         ANALYZE
 ```
 
-### 🏙️ CivicFix Vision
+### 🏙️ Fixora Vision
 
 > **"Turning citizen complaints into measurable civic action."**
 
@@ -684,7 +684,7 @@ CivicFix addresses these challenges with:
 
 # 🏆 Hackathon Value Proposition
 
-CivicFix combines:
+Fixora combines:
 
 **🌐 Full-Stack Development**
 +
@@ -737,7 +737,7 @@ docs/
 Example:
 
 ```markdown
-![CivicFix Dashboard](docs/admin-dashboard.png)
+![Fixora Dashboard](docs/admin-dashboard.png)
 ```
 
 ---
@@ -807,12 +807,12 @@ GitHub
 
 <div align="center">
 
-## 🏙️ CivicFix
+## 🏙️ Fixora
 
 ### **Report. Track. Resolve. Improve.**
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=18&pause=1000&center=true&vCenter=true&width=500&lines=Building+Smarter+Cities;Empowering+Citizens;Improving+Municipal+Services;Technology+for+Better+Communities" alt="CivicFix Animation">
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=18&pause=1000&center=true&vCenter=true&width=500&lines=Building+Smarter+Cities;Empowering+Citizens;Improving+Municipal+Services;Technology+for+Better+Communities" alt="Fixora Animation">
 
-⭐ **If you like CivicFix, consider giving the repository a star!** ⭐
+⭐ **If you like Fixora, consider giving the repository a star!** ⭐
 
 </div>
