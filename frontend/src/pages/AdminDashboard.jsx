@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import API from "../api";
-import ComplaintMap from "../components/ComplaintMap";
-import ComplaintHeatmap from "../components/ComplaintHeatmap";
 import AdminAnalytics from "../components/AdminAnalytics";
 import AdminCommandCenter from "../components/AdminCommandCenter";
 import AdminUserManagement from "../components/AdminUserManagement";
@@ -13,7 +11,6 @@ function AdminDashboard() {
 
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [mapMode, setMapMode] = useState("pins");
 
 
     // Officer Management & Recruitment States
@@ -623,58 +620,6 @@ function AdminDashboard() {
                     ))}
                 </div>
             )}
-
-
-
-            <div className="card shadow-sm mb-4">
-
-                <div className="card-body">
-
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <h4 className="mb-1">
-                                <i className="bi bi-map me-2"></i>
-                                {mapMode === "pins" ? "Live Complaint Map" : "Civic Hotspot Heatmap"}
-                            </h4>
-                            <p className="text-muted mb-0">
-                                Monitor reported civic issues and geographic problem clusters.
-                            </p>
-                        </div>
-                        <div className="btn-group">
-                            <button
-                                type="button"
-                                className={`btn btn-sm ${mapMode === "pins" ? "btn-success" : "btn-outline-success"}`}
-                                onClick={() => setMapMode("pins")}
-                            >
-                                <i className="bi bi-geo-alt me-1"></i>
-                                Pins View
-                            </button>
-                            <button
-                                type="button"
-                                className={`btn btn-sm ${mapMode === "heatmap" ? "btn-danger" : "btn-outline-danger"}`}
-                                onClick={() => setMapMode("heatmap")}
-                            >
-                                <i className="bi bi-fire me-1"></i>
-                                Heatmap View
-                            </button>
-                        </div>
-                    </div>
-
-                    {mapMode === "pins" ? (
-                        <ComplaintMap
-                            complaints={complaints}
-                        />
-                    ) : (
-                        <ComplaintHeatmap
-                            complaints={complaints}
-                        />
-                    )}
-
-                </div>
-
-            </div>
-
-
         </div>
     );
 }
